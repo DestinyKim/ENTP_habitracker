@@ -1,0 +1,78 @@
+{
+  "name": "습관 트래커 - ENTP를 위한 게임화 습관 관리",
+  "short_name": "습관 트래커",
+  "description": "ENTP 성향에 맞춘 게임화 습관 추적 애플리케이션. 레벨업, 경험치, 통계로 흥미있게 관리하세요.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#378ADD",
+  "categories": ["productivity", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23ffffff' width='540' height='720'/><rect fill='%23378ADD' width='540' height='100'/><text x='270' y='50' font-size='40' text-anchor='middle' dominant-baseline='middle' fill='white' font-weight='bold'>습관 트래커</text><rect fill='%23f8f7f5' y='100' width='540' height='300'/><circle cx='270' cy='200' r='80' fill='%23378ADD'/><text x='270' y='200' font-size='60' text-anchor='middle' dominant-baseline='middle' fill='white'>Lv.5</text><text x='270' y='320' font-size='30' text-anchor='middle' fill='%231a1a1a'>경험치 50/100</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23378ADD' width='192' height='192' rx='45'/><text x='96' y='96' font-size='120' text-anchor='middle' dominant-baseline='middle' fill='white' font-weight='bold'>✓</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23378ADD' width='192' height='192' rx='45'/><text x='96' y='96' font-size='120' text-anchor='middle' dominant-baseline='middle' fill='white' font-weight='bold'>✓</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23378ADD' width='512' height='512' rx='120'/><text x='256' y='256' font-size='320' text-anchor='middle' dominant-baseline='middle' fill='white' font-weight='bold'>✓</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "오늘의 습관",
+      "short_name": "오늘",
+      "description": "오늘의 습관을 확인하세요",
+      "url": "/?tab=dashboard",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%23378ADD' width='96' height='96'/><text x='48' y='48' font-size='60' text-anchor='middle' dominant-baseline='middle' fill='white'>📊</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "통계 보기",
+      "short_name": "통계",
+      "description": "습관 이행 통계를 확인하세요",
+      "url": "/?tab=stats",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%23639922' width='96' height='96'/><text x='48' y='48' font-size='60' text-anchor='middle' dominant-baseline='middle' fill='white'>📈</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

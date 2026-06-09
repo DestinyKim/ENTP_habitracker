@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="ENTP를 위한 게임화 습관 트래커">
+    <title>습관 트래커</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-dark: #1e293b;
+                --bg: #0f172a;
+                --card: #1e293b;
+                --text: #f1f5f9;
+                --text-secondary: #cbd5e1;
+                --border: #334155;
+                --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-user-select: none;
+            user-select: none;
+            font-size: 16px;
+        }
+
+        input, textarea, select {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .app {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            position: relative;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .stat-filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .stat-filter-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .stat-filter-btn.active {
+            color: var(--primary);
+        }
+
+        .stat-filter-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+        }
+
+        .level-card-header {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .level-number {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .xp-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .xp-fill {
+            background: white;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .xp-text {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .total-points {
+            font-size: 14px;
+            margin-top: 12px;
+            opacity: 0.95;
+        }
+
+        .habit-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .habit-item {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .habit-item:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        .habit-item.completed {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .habit-icon {
+            font-size: 32px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .habit-info {
+            flex: 1;
+        }
+
+        .habit-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .habit-xp {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .habit-status {
+            font-size: 24px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chart-header {
+            margin-bottom: 16px;
+        }
+
+        .chart-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .week-chart {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .day-col {
+            text-align: center;
+        }
+
+        .day-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .day-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .day-box {
+            width: 28px;
+            height: 16px;
+            background: var(--border);
+            border-radius: 4px;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .day-box.completed {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-row-label {
+            font-weight: 500;
+        }
+
+        .stat-row-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--bg);
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .manage-habits {
+            display: grid;
+            gap: 12px;
+        }
+
+        .manage-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+
+        .manage-item:hover {
+            border-color: var(--primary);
+        }
+
+        .manage-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .manage-icon-display {
+            font-size: 32px;
+            min-width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+
+        .manage-info {
+            flex: 1;
+        }
+
+        .manage-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .manage-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        /* 회고 관련 */
+        .retrospective-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .retrospective-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+
+        .retrospective-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .retrospective-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .retrospective-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .retrospective-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: var(--text);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .retrospective-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .modal-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--bg);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .icon-picker-section {
+            margin-bottom: 20px;
+        }
+
+        .icon-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .icon-option {
+            padding: 12px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .icon-option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .icon-option.selected {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .icon-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-preview {
+            width: 60px;
+            height: 60px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .color-option {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0 auto;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: var(--text);
+            box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--text);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-full {
+            flex: 1;
+        }
+
+        .section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .icon-picker {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .color-picker {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .retrospective-header {
+                flex-direction: column;
+            }
+
+            .retrospective-buttons {
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <h1>✨ 습관 트래커</h1>
+            <p>ENTP를 위한 게임화 습관 관리</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">📊 대시보드</button>
+            <button class="tab-btn" data-tab="stats">📈 통계</button>
+            <button class="tab-btn" data-tab="habits">⚙️ 습관 관리</button>
+            <button class="tab-btn" data-tab="retrospective">🤔 회고</button>
+        </div>
+
+        <!-- 대시보드 -->
+        <div class="section active" id="dashboard">
+            <div class="grid-2">
+                <div class="card level-card">
+                    <div class="level-card-header">현재 레벨</div>
+                    <div class="level-number" id="levelDisplay">Lv. 1</div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xpBar" style="width: 0%"></div>
+                    </div>
+                    <div class="xp-text" id="xpDisplay">0 / 100</div>
+                    <div class="total-points">총 경험치: <strong id="totalPoints">0</strong></div>
+                </div>
+            </div>
+
+            <div class="chart-header">
+                <h3>오늘의 습관</h3>
+            </div>
+            <div class="habit-grid" id="habitList"></div>
+
+            <div class="chart-header" style="margin-top: 32px;">
+                <h3>연속 달성 기록</h3>
+            </div>
+            <div class="grid-2" id="streakGrid"></div>
+        </div>
+
+        <!-- 통계 -->
+        <div class="section" id="stats">
+            <div style="margin-bottom: 24px;">
+                <div class="stat-filter-tabs">
+                    <button class="stat-filter-btn active" data-period="week">📅 주</button>
+                    <button class="stat-filter-btn" data-period="month">📅 월</button>
+                    <button class="stat-filter-btn" data-period="year">📅 연</button>
+                </div>
+            </div>
+
+            <div class="chart-header">
+                <h3 id="chartTitle">지난 7일 습관 이행</h3>
+            </div>
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="week-chart" id="weekChart"></div>
+            </div>
+
+            <div class="chart-header">
+                <h3>습관별 이행률</h3>
+            </div>
+            <div id="statsList"></div>
+        </div>
+
+        <!-- 습관 관리 -->
+        <div class="section" id="habits">
+            <div style="margin-bottom: 24px;">
+                <button class="btn btn-primary" id="addHabitBtn">
+                    <span>+</span> 새 습관 추가
+                </button>
+            </div>
+            <div class="manage-habits" id="habitsManageList"></div>
+        </div>
+
+        <!-- 회고 -->
+        <div class="section" id="retrospective">
+            <div class="card" style="margin-bottom: 24px;">
+                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">새 회고 작성</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 14px;">
+                    이번 주의 성과와 개선할 점을 기록해보세요.
+                </p>
+                <textarea id="newRetrospectiveText" placeholder="예: 이번 주에는 운동을 5번 했는데, 아임웹 작업에 더 집중하고 싶다. 다음 주에는..."></textarea>
+                <button class="btn btn-primary" id="addRetrospectiveBtn" style="margin-top: 12px;">추가</button>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <div class="stat-filter-tabs">
+                    <button class="stat-filter-btn active" data-filter="retrospective" data-period="week">📅 주</button>
+                    <button class="stat-filter-btn" data-filter="retrospective" data-period="month">📅 월</button>
+                    <button class="stat-filter-btn" data-filter="retrospective" data-period="year">📅 연</button>
+                </div>
+            </div>
+
+            <div class="chart-header">
+                <h3 id="retrospectiveTitle">이번 주 회고</h3>
+            </div>
+            <div class="retrospective-list" id="retrospectiveList"></div>
+
+            <div class="card" style="margin-top: 32px;">
+                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">📊 통계</h3>
+                <div id="retrospectiveStats"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 습관 추가/수정 모달 -->
+    <div class="modal" id="habitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">새 습관 추가</h2>
+                <p class="modal-description">나만의 습관을 만들어보세요</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">습관 이름</label>
+                <input type="text" id="habitNameInput" class="form-input" placeholder="예: 독서, 운동, 명상...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">아이콘 선택</label>
+                <div style="margin-bottom: 16px; display: flex; gap: 12px;">
+                    <div class="icon-preview" id="iconPreview">💰</div>
+                    <input type="text" id="customIconInput" class="form-input" placeholder="이모지 입력" maxlength="2" style="flex: 1;">
+                </div>
+                <div class="icon-picker" id="iconPicker"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">색상 선택</label>
+                <div class="color-picker" id="colorPicker"></div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="cancelHabitBtn">취소</button>
+                <button class="btn btn-primary" id="saveHabitBtn">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_HABITS = [
+            { id: 'aimp', name: '아임웹 수익화', icon: '💰', color: '#6366f1' },
+            { id: 'exercise', name: '운동', icon: '💪', color: '#10b981' },
+            { id: 'reading', name: '독서', icon: '📚', color: '#f59e0b' }
+        ];
+
+        const ICON_OPTIONS = ['💰', '💪', '📚', '🎯', '💻', '🎨', '📝', '🧠', '🏃', '🎮', '📖', '🏋️', '🚴', '🧘', '⚽', '🎭', '🎵', '📊', '🚀', '✨', '⭐', '🔥', '💡', '🎪'];
+        const COLOR_OPTIONS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#14b8a6'];
+
+        const POINTS_PER_HABIT = 10;
+        const POINTS_PER_LEVEL = 100;
+
+        let state = { habits: DEFAULT_HABITS, history: [], totalPoints: 0, retrospectives: [] };
+        let editingHabitId = null;
+        let editingRetrospectiveId = null;
+        let selectedIcon = '💰';
+        let selectedColor = '#6366f1';
+        let currentStatsPeriod = 'week';
+        let currentRetrospectivePeriod = 'week';
+
+        function loadState() {
+            const saved = localStorage.getItem('habitTrackerData');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    if (!state.habits || state.habits.length === 0) state.habits = DEFAULT_HABITS;
+                    if (!state.retrospectives) state.retrospectives = [];
+                } catch (e) {
+                    state.habits = DEFAULT_HABITS;
+                    state.retrospectives = [];
+                }
+            }
+            if (!state.history) state.history = [];
+            if (state.totalPoints === undefined) state.totalPoints = 0;
+        }
+
+        function saveState() {
+            localStorage.setItem('habitTrackerData', JSON.stringify(state));
+        }
+
+        function updateUI() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayData = state.history.find(h => h.date === today) || { date: today, completed: {} };
+
+            const level = Math.floor(state.totalPoints / POINTS_PER_LEVEL) + 1;
+            const pointsInLevel = state.totalPoints % POINTS_PER_LEVEL;
+            const progressPercent = (pointsInLevel / POINTS_PER_LEVEL) * 100;
+
+            document.getElementById('levelDisplay').textContent = `Lv. ${level}`;
+            document.getElementById('xpDisplay').textContent = `${pointsInLevel} / ${POINTS_PER_LEVEL}`;
+            document.getElementById('xpBar').style.width = progressPercent + '%';
+            document.getElementById('totalPoints').textContent = state.totalPoints;
+
+            const habitList = document.getElementById('habitList');
+            if (state.habits.length === 0) {
+                habitList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">추가된 습관이 없어요</p></div>';
+            } else {
+                habitList.innerHTML = state.habits.map(habit => `
+                    <div class="habit-item ${todayData.completed[habit.id] ? 'completed' : ''}" onclick="toggleHabit('${habit.id}')">
+                        <div class="habit-icon">${habit.icon}</div>
+                        <div class="habit-info">
+                            <div class="habit-name">${habit.name}</div>
+                            <div class="habit-xp">+${POINTS_PER_HABIT} XP</div>
+                        </div>
+                        <div class="habit-status">${todayData.completed[habit.id] ? '✓' : '○'}</div>
+                    </div>
+                `).join('');
+            }
+
+            const streakGrid = document.getElementById('streakGrid');
+            streakGrid.innerHTML = state.habits.map(habit => {
+                let streak = 0;
+                for (let i = 0; i < state.history.length; i++) {
+                    if (state.history[i].completed[habit.id]) streak++;
+                    else break;
+                }
+                return `
+                    <div class="stat-card">
+                        <div class="stat-label">${habit.name}</div>
+                        <div class="stat-value">${streak}</div>
+                        <div class="stat-label" style="margin-top: 8px; font-size: 11px;">일 연속</div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStats();
+            updateHabitsManageList();
+            updateRetrospectiveList();
+        }
+
+        function updateStats(period = 'week') {
+            currentStatsPeriod = period;
+
+            let days;
+            let title;
+
+            if (period === 'week') {
+                days = 7;
+                title = '지난 7일 습관 이행';
+            } else if (period === 'month') {
+                days = 30;
+                title = '지난 30일 습관 이행';
+            } else if (period === 'year') {
+                days = 365;
+                title = '지난 365일 습관 이행';
+            }
+
+            document.getElementById('chartTitle').textContent = title;
+
+            const last_n_days = [];
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                const dayData = state.history.find(h => h.date === dateStr) || { completed: {} };
+                
+                let showLabel = false;
+                if (period === 'week') {
+                    showLabel = true;
+                } else if (period === 'month' && i % 5 === 0) {
+                    showLabel = true;
+                } else if (period === 'year' && i % 7 === 0) {
+                    showLabel = true;
+                }
+
+                last_n_days.push({
+                    date: showLabel ? d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '',
+                    dayData,
+                    fullDate: d.toLocaleDateString('ko-KR', { weekday: 'short' })
+                });
+            }
+
+            const weekChart = document.getElementById('weekChart');
+            if (period === 'week') {
+                weekChart.innerHTML = last_n_days.map((day) => `
+                    <div class="day-col">
+                        <div class="day-label">${day.fullDate}</div>
+                        <div class="day-boxes">
+                            ${state.habits.map(habit => {
+                                const completed = day.dayData.completed[habit.id] ? 1 : 0;
+                                return `<div class="day-box ${completed ? 'completed' : ''}"></div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                weekChart.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 16px; background: var(--bg); border-radius: 8px;">
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                            ${period === 'month' ? '(5일 단위로 표시)' : '(주 단위로 표시)'}
+                        </div>
+                        ${last_n_days.map((day) => {
+                            if (!day.date) return '';
+                            const completedCount = state.habits.filter(h => day.dayData.completed[h.id]).length;
+                            return `
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                                    <span style="font-size: 12px; font-weight: 600;">${day.date}</span>
+                                    <div style="display: flex; gap: 2px;">
+                                        ${state.habits.map(habit => {
+                                            const completed = day.dayData.completed[habit.id] ? 1 : 0;
+                                            return `<div class="day-box" style="width: 16px; height: 16px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : ''}"></div>`;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            const stats = state.habits.map(habit => {
+                const completed = state.history
+                    .filter(h => {
+                        const hDate = new Date(h.date);
+                        const now = new Date();
+                        const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+                        return daysDiff < days && h.completed[habit.id];
+                    }).length;
+                
+                const total = (() => {
+                    let count = 0;
+                    for (let i = 0; i < days; i++) {
+                        const d = new Date();
+                        d.setDate(d.getDate() - i);
+                        const dateStr = d.toISOString().split('T')[0];
+                        if (state.history.find(h => h.date === dateStr)) count++;
+                    }
+                    return Math.max(count, 1);
+                })();
+
+                const percent = Math.round((completed / total) * 100);
+                return { name: habit.name, completed, total, percent };
+            });
+
+            const statsList = document.getElementById('statsList');
+            statsList.innerHTML = stats.map(stat => `
+                <div class="card" style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="font-weight: 600;">${stat.name}</span>
+                        <span style="background: linear-gradient(135deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">${stat.percent}%</span>
+                    </div>
+                    <div class="xp-bar" style="margin-bottom: 8px;">
+                        <div class="xp-fill" style="width: ${stat.percent}%; background: linear-gradient(135deg, #6366f1, #ec4899);"></div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">${stat.completed}회 / ${stat.total}회</div>
+                </div>
+            `).join('');
+
+            updateRetrospectiveStats();
+        }
+
+        function updateRetrospectiveStats() {
+            const days = currentStatsPeriod === 'week' ? 7 : currentStatsPeriod === 'month' ? 30 : 365;
+            
+            const stats = state.habits.map(habit => {
+                const completed = state.history
+                    .filter(h => {
+                        const hDate = new Date(h.date);
+                        const now = new Date();
+                        const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+                        return daysDiff < days && h.completed[habit.id];
+                    }).length;
+                
+                const total = (() => {
+                    let count = 0;
+                    for (let i = 0; i < days; i++) {
+                        const d = new Date();
+                        d.setDate(d.getDate() - i);
+                        const dateStr = d.toISOString().split('T')[0];
+                        if (state.history.find(h => h.date === dateStr)) count++;
+                    }
+                    return Math.max(count, 1);
+                })();
+
+                const percent = Math.round((completed / total) * 100);
+                return { name: habit.name, completed, total, percent };
+            });
+
+            const retrospectiveStats = document.getElementById('retrospectiveStats');
+            const periodLabel = currentStatsPeriod === 'week' ? '주' : currentStatsPeriod === 'month' ? '월' : '연';
+            retrospectiveStats.innerHTML = `
+                ${stats.map(stat => `
+                    <div class="stat-row">
+                        <span class="stat-row-label">${stat.name}</span>
+                        <span class="stat-row-value">${stat.completed}회 (${stat.percent}%)</span>
+                    </div>
+                `).join('')}
+                <div class="stat-row" style="border-top: 2px solid var(--border); padding-top: 12px;">
+                    <span class="stat-row-label" style="font-weight: 700;">이번 ${periodLabel} 총 경험치</span>
+                    <span class="stat-row-value" style="font-size: 16px;">+${state.totalPoints} XP</span>
+                </div>
+            `;
+        }
+
+        function updateHabitsManageList() {
+            const list = document.getElementById('habitsManageList');
+            if (state.habits.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">추가된 습관이 없어요</p></div>';
+            } else {
+                list.innerHTML = state.habits.map(habit => `
+                    <div class="manage-item">
+                        <div class="manage-left">
+                            <div class="manage-icon-display">${habit.icon}</div>
+                            <div class="manage-info">
+                                <div class="manage-name">${habit.name}</div>
+                            </div>
+                        </div>
+                        <div class="manage-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editHabit('${habit.id}')">수정</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteHabit('${habit.id}')">삭제</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateRetrospectiveList() {
+            const days = currentRetrospectivePeriod === 'week' ? 7 : currentRetrospectivePeriod === 'month' ? 30 : 365;
+            const now = new Date();
+            
+            const filtered = state.retrospectives.filter(r => {
+                const rDate = new Date(r.date);
+                const daysDiff = Math.floor((now - rDate) / (1000 * 60 * 60 * 24));
+                return daysDiff < days;
+            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const list = document.getElementById('retrospectiveList');
+            const periodLabel = currentRetrospectivePeriod === 'week' ? '주' : currentRetrospectivePeriod === 'month' ? '월' : '연';
+            document.getElementById('retrospectiveTitle').textContent = `이번 ${periodLabel} 회고`;
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><p class="empty-state-text">작성된 회고가 없어요</p></div>';
+            } else {
+                list.innerHTML = filtered.map(r => `
+                    <div class="retrospective-item">
+                        <div class="retrospective-header">
+                            <div class="retrospective-date">${new Date(r.date).toLocaleString('ko-KR')}</div>
+                            <div class="retrospective-buttons">
+                                <button class="btn btn-secondary btn-sm" onclick="editRetrospective('${r.id}')">수정</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteRetrospective('${r.id}')">삭제</button>
+                            </div>
+                        </div>
+                        <div class="retrospective-content">${r.content}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleHabit(habitId) {
+            const today = new Date().toISOString().split('T')[0];
+            let todayData = state.history.find(h => h.date === today);
+            
+            if (!todayData) {
+                todayData = { date: today, completed: {} };
+                state.history.push(todayData);
+            }
+
+            const isCompleted = todayData.completed[habitId];
+            todayData.completed[habitId] = !isCompleted;
+
+            const pointChange = !isCompleted ? POINTS_PER_HABIT : -POINTS_PER_HABIT;
+            state.totalPoints = Math.max(0, state.totalPoints + pointChange);
+
+            state.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            saveState();
+            updateUI();
+        }
+
+        // 습관 관련 함수들
+        function openAddHabitDialog() {
+            editingHabitId = null;
+            selectedIcon = '💰';
+            selectedColor = '#6366f1';
+            document.getElementById('modalTitle').textContent = '새 습관 추가';
+            document.getElementById('habitNameInput').value = '';
+            document.getElementById('customIconInput').value = '';
+            renderIconAndColorPickers();
+            updateIconPreview();
+            document.getElementById('habitModal').classList.add('active');
+            document.getElementById('habitNameInput').focus();
+        }
+
+        function editHabit(habitId) {
+            editingHabitId = habitId;
+            const habit = state.habits.find(h => h.id === habitId);
+            if (!habit) return;
+
+            selectedIcon = habit.icon;
+            selectedColor = habit.color;
+            document.getElementById('modalTitle').textContent = '습관 수정';
+            document.getElementById('habitNameInput').value = habit.name;
+            document.getElementById('customIconInput').value = habit.icon;
+            renderIconAndColorPickers();
+            updateIconPreview();
+            document.getElementById('habitModal').classList.add('active');
+        }
+
+        function deleteHabit(habitId) {
+            if (!confirm('정말로 이 습관을 삭제하시겠습니까?')) return;
+            state.habits = state.habits.filter(h => h.id !== habitId);
+            saveState();
+            updateUI();
+        }
+
+        function renderIconAndColorPickers() {
+            const iconPicker = document.getElementById('iconPicker');
+            iconPicker.innerHTML = ICON_OPTIONS.map(icon => `
+                <div class="icon-option ${icon === selectedIcon ? 'selected' : ''}" onclick="selectIcon('${icon}')">${icon}</div>
+            `).join('');
+
+            const colorPicker = document.getElementById('colorPicker');
+            colorPicker.innerHTML = COLOR_OPTIONS.map(color => `
+                <div class="color-option ${color === selectedColor ? 'selected' : ''}" style="background: ${color}; cursor: pointer;" onclick="selectColor('${color}')"></div>
+            `).join('');
+        }
+
+        function selectIcon(icon) {
+            selectedIcon = icon;
+            document.getElementById('customIconInput').value = icon;
+            document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.icon-option').forEach(el => {
+                if (el.textContent === icon) el.classList.add('selected');
+            });
+            updateIconPreview();
+        }
+
+        function selectColor(color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.color-option').forEach(el => {
+                const bgColor = window.getComputedStyle(el).backgroundColor;
+                if (bgColor.includes(color.substring(1)) || el.style.backgroundColor.includes(color.substring(1))) {
+                    el.classList.add('selected');
+                }
+            });
+        }
+
+        function updateIconPreview() {
+            document.getElementById('iconPreview').textContent = selectedIcon;
+        }
+
+        document.getElementById('customIconInput').addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            if (value) {
+                selectedIcon = value;
+                updateIconPreview();
+                document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
+            }
+        });
+
+        function closeHabitDialog() {
+            document.getElementById('habitModal').classList.remove('active');
+            editingHabitId = null;
+        }
+
+        function saveHabit() {
+            const name = document.getElementById('habitNameInput').value.trim();
+            if (!name) {
+                alert('습관 이름을 입력해주세요.');
+                return;
+            }
+
+            if (editingHabitId) {
+                const habit = state.habits.find(h => h.id === editingHabitId);
+                if (habit) {
+                    habit.name = name;
+                    habit.icon = selectedIcon;
+                    habit.color = selectedColor;
+                }
+            } else {
+                const newId = 'habit_' + Date.now();
+                state.habits.push({ id: newId, name, icon: selectedIcon, color: selectedColor });
+            }
+
+            saveState();
+            updateUI();
+            closeHabitDialog();
+        }
+
+        // 회고 관련 함수들
+        function addRetrospective() {
+            const text = document.getElementById('newRetrospectiveText').value.trim();
+            if (!text) {
+                alert('회고 내용을 입력해주세요.');
+                return;
+            }
+
+            state.retrospectives.push({
+                id: 'retro_' + Date.now(),
+                content: text,
+                date: new Date().toISOString()
+            });
+
+            document.getElementById('newRetrospectiveText').value = '';
+            saveState();
+            updateRetrospectiveList();
+        }
+
+        function editRetrospective(id) {
+            const retro = state.retrospectives.find(r => r.id === id);
+            if (!retro) return;
+
+            const newContent = prompt('회고 내용을 수정해주세요:', retro.content);
+            if (newContent !== null && newContent.trim()) {
+                retro.content = newContent.trim();
+                retro.date = new Date().toISOString();
+                saveState();
+                updateRetrospectiveList();
+            }
+        }
+
+        function deleteRetrospective(id) {
+            if (!confirm('이 회고를 삭제하시겠습니까?')) return;
+            state.retrospectives = state.retrospectives.filter(r => r.id !== id);
+            saveState();
+            updateRetrospectiveList();
+        }
+
+        // 탭 전환
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // 통계 필터
+        document.querySelectorAll('.stat-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                const period = btn.dataset.period;
+
+                if (filter === 'retrospective') {
+                    document.querySelectorAll('[data-filter="retrospective"]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentRetrospectivePeriod = period;
+                    updateRetrospectiveList();
+                } else {
+                    document.querySelectorAll('[data-filter]:not([data-filter="retrospective"])').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateStats(period);
+                }
+            });
+        });
+
+        // 버튼 이벤트
+        document.getElementById('addHabitBtn').addEventListener('click', openAddHabitDialog);
+        document.getElementById('saveHabitBtn').addEventListener('click', saveHabit);
+        document.getElementById('cancelHabitBtn').addEventListener('click', closeHabitDialog);
+        document.getElementById('addRetrospectiveBtn').addEventListener('click', addRetrospective);
+
+        document.getElementById('habitNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveHabit();
+        });
+
+        document.getElementById('newRetrospectiveText').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) addRetrospective();
+        });
+
+        document.getElementById('habitModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('habitModal')) closeHabitDialog();
+        });
+
+        // Service Worker 등록
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').catch(err => {
+                console.log('Service Worker 등록 실패:', err);
+            });
+        }
+
+        // 초기화
+        loadState();
+        updateUI();
+    </script>
+</body>
+</html>
