@@ -78,19 +78,19 @@
             gap: 4px;
             margin-bottom: 24px;
             overflow-x: auto;
-            padding-bottom: 8px;
+            padding-bottom: 12px;
             border-bottom: 2px solid var(--border);
             -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
-            padding: 10px 16px;
+            padding: 10px 14px;
             background: transparent;
             border: none;
             color: var(--text-secondary);
             font-weight: 600;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             position: relative;
             transition: color 0.3s;
             white-space: nowrap;
@@ -106,7 +106,7 @@
         .tab-btn.active::after {
             content: '';
             position: absolute;
-            bottom: -10px;
+            bottom: -12px;
             left: 0;
             right: 0;
             height: 2px;
@@ -120,7 +120,7 @@
             margin-bottom: 20px;
             overflow-x: auto;
             border-bottom: 2px solid var(--border);
-            padding-bottom: 8px;
+            padding-bottom: 12px;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -147,7 +147,7 @@
         .stat-filter-btn.active::after {
             content: '';
             position: absolute;
-            bottom: -10px;
+            bottom: -12px;
             left: 0;
             right: 0;
             height: 2px;
@@ -237,7 +237,6 @@
             cursor: pointer;
             transition: all 0.3s;
             min-height: 60px;
-            active: scale(0.98);
         }
 
         .habit-item:active {
@@ -497,6 +496,10 @@
             font-size: 12px;
         }
 
+        .btn-full {
+            width: 100%;
+        }
+
         .retrospective-item {
             background: var(--card);
             border: 1px solid var(--border);
@@ -551,6 +554,7 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            overflow: hidden;
         }
 
         .modal.active {
@@ -563,8 +567,9 @@
             padding: 20px;
             width: 100%;
             max-width: 500px;
-            max-height: 90vh;
+            max-height: calc(100vh - 100px);
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             animation: slideUp 0.3s ease;
         }
@@ -624,10 +629,30 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
+        .icon-input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .icon-preview {
+            width: 50px;
+            height: 50px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
         .icon-picker {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
+            margin-bottom: 16px;
         }
 
         .icon-option {
@@ -642,6 +667,11 @@
             justify-content: center;
             transition: all 0.3s;
             min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        .icon-option:active {
+            transform: scale(0.95);
         }
 
         .icon-option.selected {
@@ -650,22 +680,11 @@
             color: white;
         }
 
-        .icon-preview {
-            width: 50px;
-            height: 50px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-
         .color-picker {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
+            margin-bottom: 16px;
         }
 
         .color-option {
@@ -676,17 +695,23 @@
             border: 3px solid transparent;
             transition: all 0.3s;
             margin: 0 auto;
+            touch-action: manipulation;
+        }
+
+        .color-option:active {
+            transform: scale(0.95);
         }
 
         .color-option.selected {
             border-color: var(--text);
+            box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--text);
         }
 
         .modal-buttons {
             display: flex;
             gap: 12px;
             justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 24px;
             padding-top: 20px;
             border-top: 1px solid var(--border);
         }
@@ -775,8 +800,8 @@
 
         <!-- 습관 관리 -->
         <div class="section" id="habits">
-            <button class="btn btn-primary" id="addHabitBtn" style="width: 100%; margin-bottom: 16px;">
-                + 새 습관 추가
+            <button class="btn btn-primary btn-full" id="addHabitBtn" style="margin-bottom: 16px;">
+                ➕ 새 습관 추가
             </button>
             <div id="habitsManageList"></div>
         </div>
@@ -786,7 +811,7 @@
             <div class="card">
                 <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">새 회고</h3>
                 <textarea id="newRetrospectiveText" placeholder="오늘의 성과와 개선점을 기록하세요"></textarea>
-                <button class="btn btn-primary" id="addRetrospectiveBtn" style="width: 100%; margin-top: 12px;">추가</button>
+                <button class="btn btn-primary btn-full" id="addRetrospectiveBtn" style="margin-top: 12px;">추가</button>
             </div>
 
             <div class="stat-filter-tabs" style="margin-top: 20px;">
@@ -822,7 +847,7 @@
 
             <div class="form-group">
                 <label class="form-label">아이콘</label>
-                <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                <div class="icon-input-group">
                     <div class="icon-preview" id="iconPreview">💰</div>
                     <input type="text" id="customIconInput" class="form-input" placeholder="이모지" maxlength="2" style="flex: 1;">
                 </div>
@@ -830,7 +855,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">색상</label>
+                <label class="form-label">색상 선택</label>
                 <div class="color-picker" id="colorPicker"></div>
             </div>
 
@@ -895,16 +920,18 @@
             document.getElementById('totalPoints').textContent = state.totalPoints;
 
             const habitList = document.getElementById('habitList');
-            habitList.innerHTML = state.habits.map(habit => `
-                <div class="habit-item ${todayData.completed[habit.id] ? 'completed' : ''}" onclick="toggleHabit('${habit.id}')">
-                    <div class="habit-icon">${habit.icon}</div>
-                    <div class="habit-info">
-                        <div class="habit-name">${habit.name}</div>
-                        <div class="habit-xp">+${POINTS_PER_HABIT} XP</div>
+            habitList.innerHTML = state.habits.length === 0 ? 
+                '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">추가된 습관이 없어요</p></div>' :
+                state.habits.map(habit => `
+                    <div class="habit-item ${todayData.completed[habit.id] ? 'completed' : ''}" onclick="toggleHabit('${habit.id}')">
+                        <div class="habit-icon">${habit.icon}</div>
+                        <div class="habit-info">
+                            <div class="habit-name">${habit.name}</div>
+                            <div class="habit-xp">+${POINTS_PER_HABIT} XP</div>
+                        </div>
+                        <div class="habit-status">${todayData.completed[habit.id] ? '✓' : '○'}</div>
                     </div>
-                    <div class="habit-status">${todayData.completed[habit.id] ? '✓' : '○'}</div>
-                </div>
-            `).join('');
+                `).join('');
 
             const streakGrid = document.getElementById('streakGrid');
             streakGrid.innerHTML = state.habits.map(habit => {
@@ -1068,20 +1095,22 @@
 
         function updateHabitsManageList() {
             const list = document.getElementById('habitsManageList');
-            list.innerHTML = state.habits.map(habit => `
-                <div class="manage-item">
-                    <div class="manage-left">
-                        <div class="manage-icon-display">${habit.icon}</div>
-                        <div class="manage-info">
-                            <div class="manage-name">${habit.name}</div>
+            list.innerHTML = state.habits.length === 0 ?
+                '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">추가된 습관이 없어요</p></div>' :
+                state.habits.map(habit => `
+                    <div class="manage-item">
+                        <div class="manage-left">
+                            <div class="manage-icon-display">${habit.icon}</div>
+                            <div class="manage-info">
+                                <div class="manage-name">${habit.name}</div>
+                            </div>
+                        </div>
+                        <div class="manage-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editHabit('${habit.id}')">수정</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteHabit('${habit.id}')">삭제</button>
                         </div>
                     </div>
-                    <div class="manage-buttons">
-                        <button class="btn btn-secondary btn-sm" onclick="editHabit('${habit.id}')">수정</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteHabit('${habit.id}')">삭제</button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
         }
 
         function updateRetrospectiveList() {
@@ -1145,7 +1174,7 @@
             renderIconAndColorPickers();
             document.getElementById('iconPreview').textContent = selectedIcon;
             document.getElementById('habitModal').classList.add('active');
-            document.getElementById('habitNameInput').focus();
+            setTimeout(() => document.getElementById('habitNameInput').focus(), 100);
         }
 
         function editHabit(habitId) {
@@ -1177,8 +1206,11 @@
             `).join('');
 
             const colorPicker = document.getElementById('colorPicker');
-            colorPicker.innerHTML = COLOR_OPTIONS.map(color => `
-                <div class="color-option ${color === selectedColor ? 'selected' : ''}" style="background: ${color};" onclick="selectColor('${color}')"></div>
+            colorPicker.innerHTML = COLOR_OPTIONS.map((color, idx) => `
+                <div class="color-option ${color === selectedColor ? 'selected' : ''}" 
+                     style="background: ${color};" 
+                     id="color-${idx}"
+                     onclick="selectColor('${color}', '${idx}')"></div>
             `).join('');
         }
 
@@ -1192,14 +1224,10 @@
             });
         }
 
-        function selectColor(color) {
+        function selectColor(color, idx) {
             selectedColor = color;
             document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
-            document.querySelectorAll('.color-option').forEach(el => {
-                if (el.style.backgroundColor.includes(color.substring(1))) {
-                    el.classList.add('selected');
-                }
-            });
+            document.getElementById(`color-${idx}`).classList.add('selected');
         }
 
         document.getElementById('customIconInput').addEventListener('input', (e) => {
