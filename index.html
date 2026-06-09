@@ -785,6 +785,10 @@
                 <button class="stat-filter-btn" data-period="year">연</button>
             </div>
 
+            <div id="statsYearSelector" style="display: none; margin-bottom: 16px;">
+                <select id="statsYearSelect" class="form-input" style="font-weight: 600;"></select>
+            </div>
+
             <div class="chart-header">
                 <h3 id="chartTitle">지난 7일</h3>
             </div>
@@ -818,6 +822,10 @@
                 <button class="stat-filter-btn active" data-filter="retrospective" data-period="week">주</button>
                 <button class="stat-filter-btn" data-filter="retrospective" data-period="month">월</button>
                 <button class="stat-filter-btn" data-filter="retrospective" data-period="year">연</button>
+            </div>
+
+            <div id="retroYearSelector" style="display: none; margin-bottom: 16px;">
+                <select id="retroYearSelect" class="form-input" style="font-weight: 600;"></select>
             </div>
 
             <div class="chart-header">
@@ -885,6 +893,8 @@
         let selectedColor = '#6366f1';
         let currentStatsPeriod = 'week';
         let currentRetrospectivePeriod = 'week';
+        let selectedStatsYear = new Date().getFullYear();
+        let selectedRetroYear = new Date().getFullYear();
 
         function loadState() {
             const saved = localStorage.getItem('habitTrackerData');
@@ -953,9 +963,32 @@
             updateRetrospectiveList();
         }
 
+        function getYearList() {
+            const years = new Set();
+            const thisYear = new Date().getFullYear();
+            years.add(thisYear);
+            state.history.forEach(h => years.add(new Date(h.date).getFullYear()));
+            state.retrospectives.forEach(r => years.add(new Date(r.date).getFullYear()));
+            return Array.from(years).sort((a, b) => b - a);
+        }
+
+        function populateYearSelect(selectId, selectedYear) {
+            const select = document.getElementById(selectId);
+            const years = getYearList();
+            select.innerHTML = years.map(y => 
+                `<option value="${y}" ${y === selectedYear ? 'selected' : ''}>${y}년</option>`
+            ).join('');
+        }
+
         function updateStats(period = 'week') {
             currentStatsPeriod = period;
             let days, title;
+
+            // 연도 선택기 표시/숨김
+            document.getElementById('statsYearSelector').style.display = period === 'year' ? 'block' : 'none';
+            if (period === 'year') {
+                populateYearSelect('statsYearSelect', selectedStatsYear);
+            }
 
             if (period === 'week') {
                 days = 7;
@@ -964,85 +997,120 @@
                 days = 30;
                 title = '지난 30일';
             } else if (period === 'year') {
-                days = 365;
-                title = '지난 365일';
+                title = `${selectedStatsYear}년`;
             }
 
             document.getElementById('chartTitle').textContent = title;
 
-            const last_n_days = [];
-            for (let i = days - 1; i >= 0; i--) {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                const dateStr = d.toISOString().split('T')[0];
-                const dayData = state.history.find(h => h.date === dateStr) || { completed: {} };
-                
-                let showLabel = false;
-                if (period === 'week') showLabel = true;
-                else if (period === 'month' && i % 5 === 0) showLabel = true;
-                else if (period === 'year' && i % 7 === 0) showLabel = true;
-
-                last_n_days.push({
-                    date: showLabel ? d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '',
-                    dayData,
-                    fullDate: d.toLocaleDateString('ko-KR', { weekday: 'short' })
-                });
-            }
-
             const weekChart = document.getElementById('weekChart');
-            if (period === 'week') {
-                weekChart.style.display = 'grid';
-                weekChart.style.gridTemplateColumns = 'repeat(7, 1fr)';
-                weekChart.style.gap = '6px';
-                weekChart.innerHTML = last_n_days.map((day) => `
-                    <div class="day-col">
-                        <div class="day-label">${day.fullDate}</div>
-                        <div class="day-boxes">
-                            ${state.habits.map(habit => {
-                                const completed = day.dayData.completed[habit.id] ? 1 : 0;
-                                return `<div class="day-box ${completed ? 'completed' : ''}"></div>`;
-                            }).join('')}
-                        </div>
-                    </div>
-                `).join('');
-            } else {
+
+            if (period === 'year') {
+                // 연도별: 월별 집계
                 weekChart.style.display = 'block';
                 weekChart.style.gridTemplateColumns = 'none';
                 weekChart.style.gap = '0';
-                const visibleDays = last_n_days.filter(day => day.date);
-                weekChart.innerHTML = visibleDays.map((day) => {
-                    const completedCount = state.habits.filter(h => day.dayData.completed[h.id]).length;
-                    const totalHabits = state.habits.length;
+
+                const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+                const monthData = [];
+                for (let m = 0; m < 12; m++) {
+                    const monthHistory = state.history.filter(h => {
+                        const d = new Date(h.date);
+                        return d.getFullYear() === selectedStatsYear && d.getMonth() === m;
+                    });
+                    let totalCompleted = 0;
+                    monthHistory.forEach(h => {
+                        totalCompleted += state.habits.filter(habit => h.completed[habit.id]).length;
+                    });
+                    monthData.push({ name: monthNames[m], days: monthHistory.length, completed: totalCompleted });
+                }
+
+                weekChart.innerHTML = monthData.map(month => {
+                    const maxPossible = month.days * state.habits.length;
+                    const percent = maxPossible > 0 ? Math.round((month.completed / maxPossible) * 100) : 0;
                     return `
-                        <div style="font-size: 13px; padding: 10px 4px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 600;">${day.date}</span>
-                            <div style="display: flex; gap: 4px; align-items: center;">
-                                ${state.habits.map(habit => {
-                                    const completed = day.dayData.completed[habit.id] ? 1 : 0;
-                                    return `<div style="width: 16px; height: 16px; border-radius: 4px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : 'background: var(--border);'}"></div>`;
-                                }).join('')}
-                                <span style="margin-left: 8px; font-size: 12px; color: var(--text-secondary); min-width: 32px; text-align: right;">${completedCount}/${totalHabits}</span>
+                        <div style="padding: 12px 4px; border-bottom: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                <span style="font-weight: 600; font-size: 14px;">${month.name}</span>
+                                <span style="font-size: 13px; color: var(--text-secondary);">${month.completed}회 (${percent}%)</span>
+                            </div>
+                            <div class="xp-bar">
+                                <div class="xp-fill" style="width: ${percent}%; background: linear-gradient(135deg, #6366f1, #ec4899);"></div>
                             </div>
                         </div>
                     `;
                 }).join('');
+            } else {
+                // 주/월: 일별
+                const last_n_days = [];
+                for (let i = days - 1; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const dateStr = d.toISOString().split('T')[0];
+                    const dayData = state.history.find(h => h.date === dateStr) || { completed: {} };
+                    
+                    let showLabel = false;
+                    if (period === 'week') showLabel = true;
+                    else if (period === 'month' && i % 5 === 0) showLabel = true;
+
+                    last_n_days.push({
+                        date: showLabel ? d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '',
+                        dayData,
+                        fullDate: d.toLocaleDateString('ko-KR', { weekday: 'short' })
+                    });
+                }
+
+                if (period === 'week') {
+                    weekChart.style.display = 'grid';
+                    weekChart.style.gridTemplateColumns = 'repeat(7, 1fr)';
+                    weekChart.style.gap = '6px';
+                    weekChart.innerHTML = last_n_days.map((day) => `
+                        <div class="day-col">
+                            <div class="day-label">${day.fullDate}</div>
+                            <div class="day-boxes">
+                                ${state.habits.map(habit => {
+                                    const completed = day.dayData.completed[habit.id] ? 1 : 0;
+                                    return `<div class="day-box ${completed ? 'completed' : ''}"></div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    weekChart.style.display = 'block';
+                    weekChart.style.gridTemplateColumns = 'none';
+                    weekChart.style.gap = '0';
+                    const visibleDays = last_n_days.filter(day => day.date);
+                    weekChart.innerHTML = visibleDays.map((day) => {
+                        const completedCount = state.habits.filter(h => day.dayData.completed[h.id]).length;
+                        const totalHabits = state.habits.length;
+                        return `
+                            <div style="font-size: 13px; padding: 10px 4px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600;">${day.date}</span>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    ${state.habits.map(habit => {
+                                        const completed = day.dayData.completed[habit.id] ? 1 : 0;
+                                        return `<div style="width: 16px; height: 16px; border-radius: 4px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : 'background: var(--border);'}"></div>`;
+                                    }).join('')}
+                                    <span style="margin-left: 8px; font-size: 12px; color: var(--text-secondary); min-width: 32px; text-align: right;">${completedCount}/${totalHabits}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
             }
 
+            // 이행률 계산
             const stats = state.habits.map(habit => {
-                const completed = state.history.filter(h => {
-                    const hDate = new Date(h.date);
-                    const now = new Date();
-                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
-                    return daysDiff < days && h.completed[habit.id];
-                }).length;
-                
-                const total = Math.max(1, state.history.filter(h => {
-                    const hDate = new Date(h.date);
-                    const now = new Date();
-                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
-                    return daysDiff < days;
-                }).length);
-
+                let relevantHistory;
+                if (period === 'year') {
+                    relevantHistory = state.history.filter(h => new Date(h.date).getFullYear() === selectedStatsYear);
+                } else {
+                    relevantHistory = state.history.filter(h => {
+                        const daysDiff = Math.floor((new Date() - new Date(h.date)) / (1000 * 60 * 60 * 24));
+                        return daysDiff < days;
+                    });
+                }
+                const completed = relevantHistory.filter(h => h.completed[habit.id]).length;
+                const total = Math.max(1, relevantHistory.length);
                 const percent = Math.round((completed / total) * 100);
                 return { name: habit.name, completed, total, percent };
             });
@@ -1065,38 +1133,39 @@
         }
 
         function updateRetrospectiveStats() {
-            const days = currentStatsPeriod === 'week' ? 7 : currentStatsPeriod === 'month' ? 30 : 365;
-            
             const stats = state.habits.map(habit => {
-                const completed = state.history.filter(h => {
-                    const hDate = new Date(h.date);
-                    const now = new Date();
-                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
-                    return daysDiff < days && h.completed[habit.id];
-                }).length;
-                
-                const total = Math.max(1, state.history.filter(h => {
-                    const hDate = new Date(h.date);
-                    const now = new Date();
-                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
-                    return daysDiff < days;
-                }).length);
-
+                let relevantHistory;
+                if (currentRetrospectivePeriod === 'year') {
+                    relevantHistory = state.history.filter(h => new Date(h.date).getFullYear() === selectedRetroYear);
+                } else {
+                    const days = currentRetrospectivePeriod === 'week' ? 7 : 30;
+                    relevantHistory = state.history.filter(h => {
+                        const daysDiff = Math.floor((new Date() - new Date(h.date)) / (1000 * 60 * 60 * 24));
+                        return daysDiff < days;
+                    });
+                }
+                const completed = relevantHistory.filter(h => h.completed[habit.id]).length;
+                const total = Math.max(1, relevantHistory.length);
                 const percent = Math.round((completed / total) * 100);
                 return { name: habit.name, completed, total, percent };
             });
 
             const retrospectiveStats = document.getElementById('retrospectiveStats');
-            const periodLabel = currentStatsPeriod === 'week' ? '주' : currentStatsPeriod === 'month' ? '월' : '연';
+            let periodLabel;
+            if (currentRetrospectivePeriod === 'year') {
+                periodLabel = `${selectedRetroYear}년`;
+            } else {
+                periodLabel = '이번 ' + (currentRetrospectivePeriod === 'week' ? '주' : '월');
+            }
             retrospectiveStats.innerHTML = `
                 ${stats.map(stat => `
                     <div class="stat-row">
                         <span class="stat-row-label">${stat.name}</span>
-                        <span class="stat-row-value">${stat.completed}회</span>
+                        <span class="stat-row-value">${stat.completed}회 (${stat.percent}%)</span>
                     </div>
                 `).join('')}
                 <div class="stat-row" style="border-top: 2px solid var(--border); padding-top: 12px;">
-                    <span class="stat-row-label" style="font-weight: 700;">이번 ${periodLabel}</span>
+                    <span class="stat-row-label" style="font-weight: 700;">${periodLabel}</span>
                     <span class="stat-row-value">+${state.totalPoints} XP</span>
                 </div>
             `;
@@ -1123,18 +1192,37 @@
         }
 
         function updateRetrospectiveList() {
-            const days = currentRetrospectivePeriod === 'week' ? 7 : currentRetrospectivePeriod === 'month' ? 30 : 365;
+            // 연도 선택기 표시/숨김
+            document.getElementById('retroYearSelector').style.display = currentRetrospectivePeriod === 'year' ? 'block' : 'none';
+            if (currentRetrospectivePeriod === 'year') {
+                populateYearSelect('retroYearSelect', selectedRetroYear);
+            }
+
             const now = new Date();
-            
-            const filtered = state.retrospectives.filter(r => {
-                const rDate = new Date(r.date);
-                const daysDiff = Math.floor((now - rDate) / (1000 * 60 * 60 * 24));
-                return daysDiff < days;
-            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+            let filtered;
+
+            if (currentRetrospectivePeriod === 'year') {
+                filtered = state.retrospectives.filter(r => 
+                    new Date(r.date).getFullYear() === selectedRetroYear
+                );
+            } else {
+                const days = currentRetrospectivePeriod === 'week' ? 7 : 30;
+                filtered = state.retrospectives.filter(r => {
+                    const daysDiff = Math.floor((now - new Date(r.date)) / (1000 * 60 * 60 * 24));
+                    return daysDiff < days;
+                });
+            }
+            filtered = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const list = document.getElementById('retrospectiveList');
-            const periodLabel = currentRetrospectivePeriod === 'week' ? '주' : currentRetrospectivePeriod === 'month' ? '월' : '연';
-            document.getElementById('retrospectiveTitle').textContent = `이번 ${periodLabel}`;
+            let titleText;
+            if (currentRetrospectivePeriod === 'year') {
+                titleText = `${selectedRetroYear}년 회고`;
+            } else {
+                const periodLabel = currentRetrospectivePeriod === 'week' ? '주' : '월';
+                titleText = `이번 ${periodLabel} 회고`;
+            }
+            document.getElementById('retrospectiveTitle').textContent = titleText;
 
             list.innerHTML = filtered.length === 0 ? 
                 '<div class="empty-state"><div class="empty-state-icon">📝</div><p class="empty-state-text">회고가 없어요</p></div>' :
@@ -1341,6 +1429,18 @@
                     updateStats(period);
                 }
             });
+        });
+
+        // 연도 드롭다운 변경
+        document.getElementById('statsYearSelect').addEventListener('change', (e) => {
+            selectedStatsYear = parseInt(e.target.value);
+            updateStats('year');
+        });
+
+        document.getElementById('retroYearSelect').addEventListener('change', (e) => {
+            selectedRetroYear = parseInt(e.target.value);
+            updateRetrospectiveList();
+            updateRetrospectiveStats();
         });
 
         // 버튼
