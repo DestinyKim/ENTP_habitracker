@@ -991,6 +991,9 @@
 
             const weekChart = document.getElementById('weekChart');
             if (period === 'week') {
+                weekChart.style.display = 'grid';
+                weekChart.style.gridTemplateColumns = 'repeat(7, 1fr)';
+                weekChart.style.gap = '6px';
                 weekChart.innerHTML = last_n_days.map((day) => `
                     <div class="day-col">
                         <div class="day-label">${day.fullDate}</div>
@@ -1003,16 +1006,22 @@
                     </div>
                 `).join('');
             } else {
-                weekChart.innerHTML = last_n_days.map((day) => {
-                    if (!day.date) return '';
+                weekChart.style.display = 'block';
+                weekChart.style.gridTemplateColumns = 'none';
+                weekChart.style.gap = '0';
+                const visibleDays = last_n_days.filter(day => day.date);
+                weekChart.innerHTML = visibleDays.map((day) => {
+                    const completedCount = state.habits.filter(h => day.dayData.completed[h.id]).length;
+                    const totalHabits = state.habits.length;
                     return `
-                        <div style="font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
-                            <span>${day.date}</span>
-                            <div style="display: flex; gap: 2px;">
+                        <div style="font-size: 13px; padding: 10px 4px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 600;">${day.date}</span>
+                            <div style="display: flex; gap: 4px; align-items: center;">
                                 ${state.habits.map(habit => {
                                     const completed = day.dayData.completed[habit.id] ? 1 : 0;
-                                    return `<div class="day-box" style="width: 14px; height: 14px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : ''}"></div>`;
+                                    return `<div style="width: 16px; height: 16px; border-radius: 4px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : 'background: var(--border);'}"></div>`;
                                 }).join('')}
+                                <span style="margin-left: 8px; font-size: 12px; color: var(--text-secondary); min-width: 32px; text-align: right;">${completedCount}/${totalHabits}</span>
                             </div>
                         </div>
                     `;
