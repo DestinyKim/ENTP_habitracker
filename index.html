@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
     <meta name="description" content="ENTP를 위한 게임화 습관 트래커">
     <title>습관 트래커</title>
@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
@@ -21,56 +22,44 @@
             --accent: #f59e0b;
             --success: #10b981;
             --danger: #ef4444;
-            --bg-dark: #0f172a;
             --bg: #f8fafc;
             --card: #ffffff;
             --text: #1e293b;
             --text-secondary: #64748b;
             --border: #e2e8f0;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-dark: #1e293b;
-                --bg: #0f172a;
-                --card: #1e293b;
-                --text: #f1f5f9;
-                --text-secondary: #cbd5e1;
-                --border: #334155;
-                --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.4);
-            }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg);
             color: var(--text);
             -webkit-user-select: none;
             user-select: none;
             font-size: 16px;
+            line-height: 1.6;
         }
 
         input, textarea, select {
             -webkit-user-select: text;
             user-select: text;
+            font-size: 16px;
         }
 
         .app {
-            max-width: 900px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 24px 16px;
+            padding: 16px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
         }
 
         .header {
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -81,29 +70,33 @@
 
         .header p {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 32px;
+            gap: 4px;
+            margin-bottom: 24px;
             overflow-x: auto;
             padding-bottom: 8px;
             border-bottom: 2px solid var(--border);
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
-            padding: 12px 24px;
+            padding: 10px 16px;
             background: transparent;
             border: none;
             color: var(--text-secondary);
             font-weight: 600;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             position: relative;
             transition: color 0.3s;
             white-space: nowrap;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
 
         .tab-btn.active {
@@ -123,22 +116,28 @@
 
         .stat-filter-tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
+            gap: 4px;
+            margin-bottom: 20px;
+            overflow-x: auto;
             border-bottom: 2px solid var(--border);
             padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .stat-filter-btn {
-            padding: 8px 16px;
+            padding: 8px 12px;
             background: transparent;
             border: none;
             color: var(--text-secondary);
             font-weight: 600;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             position: relative;
             transition: color 0.3s;
+            white-space: nowrap;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
 
         .stat-filter-btn.active {
@@ -164,35 +163,24 @@
             display: block;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
         .card {
             background: var(--card);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            margin-bottom: 16px;
         }
 
         .level-card {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
+            padding: 20px;
         }
 
         .level-card-header {
-            font-size: 13px;
+            font-size: 12px;
             opacity: 0.9;
             margin-bottom: 12px;
             font-weight: 600;
@@ -201,7 +189,7 @@
         }
 
         .level-number {
-            font-size: 48px;
+            font-size: 40px;
             font-weight: 800;
             margin-bottom: 12px;
         }
@@ -227,7 +215,7 @@
         }
 
         .total-points {
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 12px;
             opacity: 0.95;
         }
@@ -235,19 +223,25 @@
         .habit-grid {
             display: grid;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .habit-item {
             background: var(--card);
             border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 14px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             cursor: pointer;
             transition: all 0.3s;
+            min-height: 60px;
+            active: scale(0.98);
+        }
+
+        .habit-item:active {
+            transform: scale(0.98);
         }
 
         .habit-item:hover {
@@ -261,8 +255,8 @@
         }
 
         .habit-icon {
-            font-size: 32px;
-            min-width: 40px;
+            font-size: 28px;
+            min-width: 36px;
             text-align: center;
         }
 
@@ -272,7 +266,7 @@
 
         .habit-name {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 4px;
         }
 
@@ -282,28 +276,29 @@
         }
 
         .habit-status {
-            font-size: 24px;
-            min-width: 40px;
+            font-size: 22px;
+            min-width: 36px;
             text-align: center;
         }
 
         .stat-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 16px;
             text-align: center;
+            margin-bottom: 12px;
         }
 
         .stat-label {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             margin-bottom: 8px;
             font-weight: 600;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
@@ -312,11 +307,11 @@
         }
 
         .chart-header {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .chart-header h3 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 12px;
         }
@@ -324,8 +319,8 @@
         .week-chart {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 24px;
+            gap: 6px;
+            margin-bottom: 20px;
         }
 
         .day-col {
@@ -333,23 +328,23 @@
         }
 
         .day-label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         .day-boxes {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .day-box {
-            width: 28px;
-            height: 16px;
+            width: 24px;
+            height: 14px;
             background: var(--border);
-            border-radius: 4px;
+            border-radius: 3px;
             margin: 0 auto;
             transition: all 0.3s;
         }
@@ -383,12 +378,12 @@
 
         textarea {
             width: 100%;
-            min-height: 140px;
-            padding: 16px;
+            min-height: 120px;
+            padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text);
             background: var(--bg);
             resize: vertical;
@@ -401,25 +396,22 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .manage-habits {
-            display: grid;
-            gap: 12px;
-        }
-
         .manage-item {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 14px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             justify-content: space-between;
             transition: all 0.3s;
+            margin-bottom: 12px;
+            min-height: 60px;
         }
 
-        .manage-item:hover {
-            border-color: var(--primary);
+        .manage-item:active {
+            transform: scale(0.98);
         }
 
         .manage-left {
@@ -430,9 +422,9 @@
         }
 
         .manage-icon-display {
-            font-size: 32px;
-            min-width: 48px;
-            height: 48px;
+            font-size: 28px;
+            min-width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -446,26 +438,28 @@
 
         .manage-name {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 4px;
         }
 
         .manage-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 10px 14px;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         .btn-primary {
@@ -473,9 +467,8 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        .btn-primary:active {
+            transform: scale(0.95);
         }
 
         .btn-secondary {
@@ -484,7 +477,7 @@
             border: 1px solid var(--border);
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:active {
             background: var(--border);
         }
 
@@ -494,33 +487,27 @@
             border: 1px solid var(--danger);
         }
 
-        .btn-danger:hover {
+        .btn-danger:active {
             background: var(--danger);
             color: white;
         }
 
         .btn-sm {
-            padding: 8px 16px;
-            font-size: 13px;
-        }
-
-        /* 회고 관련 */
-        .retrospective-list {
-            display: grid;
-            gap: 16px;
+            padding: 8px 12px;
+            font-size: 12px;
         }
 
         .retrospective-item {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 14px;
             transition: all 0.3s;
+            margin-bottom: 12px;
         }
 
-        .retrospective-item:hover {
-            border-color: var(--primary);
-            box-shadow: var(--shadow);
+        .retrospective-item:active {
+            transform: scale(0.98);
         }
 
         .retrospective-header {
@@ -528,10 +515,11 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 12px;
+            gap: 8px;
         }
 
         .retrospective-date {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             font-weight: 600;
         }
@@ -547,7 +535,7 @@
 
         .retrospective-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         /* 모달 */
@@ -562,7 +550,7 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
+            padding: 16px;
         }
 
         .modal.active {
@@ -572,11 +560,12 @@
         .modal-content {
             background: var(--card);
             border-radius: 16px;
-            padding: 32px;
-            width: 90%;
+            padding: 20px;
+            width: 100%;
             max-width: 500px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             animation: slideUp 0.3s ease;
         }
 
@@ -592,22 +581,22 @@
         }
 
         .modal-header {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .modal-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             margin-bottom: 4px;
         }
 
         .modal-description {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-label {
@@ -617,50 +606,42 @@
             font-size: 14px;
         }
 
-        .form-input, .form-select {
+        .form-input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 12px;
             border: 1px solid var(--border);
             border-radius: 8px;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 16px;
             color: var(--text);
             background: var(--bg);
             transition: all 0.3s;
         }
 
-        .form-input:focus, .form-select:focus {
+        .form-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .icon-picker-section {
-            margin-bottom: 20px;
-        }
-
         .icon-picker {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
         }
 
         .icon-option {
-            padding: 12px;
+            padding: 10px;
             background: var(--bg);
             border: 2px solid var(--border);
             border-radius: 8px;
             cursor: pointer;
-            font-size: 28px;
+            font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-        }
-
-        .icon-option:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
+            min-height: 44px;
         }
 
         .icon-option.selected {
@@ -669,21 +650,16 @@
             color: white;
         }
 
-        .icon-input-group {
-            display: flex;
-            gap: 8px;
-        }
-
         .icon-preview {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 28px;
         }
 
         .color-picker {
@@ -693,8 +669,8 @@
         }
 
         .color-option {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 8px;
             cursor: pointer;
             border: 3px solid transparent;
@@ -702,32 +678,17 @@
             margin: 0 auto;
         }
 
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-
         .color-option.selected {
             border-color: var(--text);
-            box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--text);
         }
 
         .modal-buttons {
             display: flex;
             gap: 12px;
             justify-content: flex-end;
-            margin-top: 28px;
-            padding-top: 24px;
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 1px solid var(--border);
-        }
-
-        .btn-full {
-            flex: 1;
-        }
-
-        .section h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
         }
 
         .empty-state {
@@ -737,42 +698,19 @@
         }
 
         .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 40px;
+            margin-bottom: 12px;
         }
 
         .empty-state-text {
-            font-size: 16px;
+            font-size: 14px;
             margin-bottom: 8px;
         }
 
-        @media (max-width: 640px) {
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                padding: 24px;
-            }
-
-            .icon-picker {
-                grid-template-columns: repeat(5, 1fr);
-            }
-
-            .color-picker {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .retrospective-header {
-                flex-direction: column;
-            }
-
-            .retrospective-buttons {
-                margin-top: 8px;
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(0px, env(safe-area-inset-left));
+                padding-right: max(0px, env(safe-area-inset-right));
             }
         }
     </style>
@@ -787,22 +725,20 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="dashboard">📊 대시보드</button>
             <button class="tab-btn" data-tab="stats">📈 통계</button>
-            <button class="tab-btn" data-tab="habits">⚙️ 습관 관리</button>
+            <button class="tab-btn" data-tab="habits">⚙️ 관리</button>
             <button class="tab-btn" data-tab="retrospective">🤔 회고</button>
         </div>
 
         <!-- 대시보드 -->
         <div class="section active" id="dashboard">
-            <div class="grid-2">
-                <div class="card level-card">
-                    <div class="level-card-header">현재 레벨</div>
-                    <div class="level-number" id="levelDisplay">Lv. 1</div>
-                    <div class="xp-bar">
-                        <div class="xp-fill" id="xpBar" style="width: 0%"></div>
-                    </div>
-                    <div class="xp-text" id="xpDisplay">0 / 100</div>
-                    <div class="total-points">총 경험치: <strong id="totalPoints">0</strong></div>
+            <div class="card level-card">
+                <div class="level-card-header">현재 레벨</div>
+                <div class="level-number" id="levelDisplay">Lv. 1</div>
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xpBar" style="width: 0%"></div>
                 </div>
+                <div class="xp-text" id="xpDisplay">0 / 100</div>
+                <div class="total-points">총 경험치: <strong id="totalPoints">0</strong></div>
             </div>
 
             <div class="chart-header">
@@ -810,77 +746,68 @@
             </div>
             <div class="habit-grid" id="habitList"></div>
 
-            <div class="chart-header" style="margin-top: 32px;">
-                <h3>연속 달성 기록</h3>
+            <div class="chart-header" style="margin-top: 24px;">
+                <h3>연속 달성</h3>
             </div>
-            <div class="grid-2" id="streakGrid"></div>
+            <div id="streakGrid"></div>
         </div>
 
         <!-- 통계 -->
         <div class="section" id="stats">
-            <div style="margin-bottom: 24px;">
-                <div class="stat-filter-tabs">
-                    <button class="stat-filter-btn active" data-period="week">📅 주</button>
-                    <button class="stat-filter-btn" data-period="month">📅 월</button>
-                    <button class="stat-filter-btn" data-period="year">📅 연</button>
-                </div>
+            <div class="stat-filter-tabs">
+                <button class="stat-filter-btn active" data-period="week">주</button>
+                <button class="stat-filter-btn" data-period="month">월</button>
+                <button class="stat-filter-btn" data-period="year">연</button>
             </div>
 
             <div class="chart-header">
-                <h3 id="chartTitle">지난 7일 습관 이행</h3>
+                <h3 id="chartTitle">지난 7일</h3>
             </div>
-            <div class="card" style="margin-bottom: 24px;">
+            <div class="card">
                 <div class="week-chart" id="weekChart"></div>
             </div>
 
             <div class="chart-header">
-                <h3>습관별 이행률</h3>
+                <h3>이행률</h3>
             </div>
             <div id="statsList"></div>
         </div>
 
         <!-- 습관 관리 -->
         <div class="section" id="habits">
-            <div style="margin-bottom: 24px;">
-                <button class="btn btn-primary" id="addHabitBtn">
-                    <span>+</span> 새 습관 추가
-                </button>
-            </div>
-            <div class="manage-habits" id="habitsManageList"></div>
+            <button class="btn btn-primary" id="addHabitBtn" style="width: 100%; margin-bottom: 16px;">
+                + 새 습관 추가
+            </button>
+            <div id="habitsManageList"></div>
         </div>
 
         <!-- 회고 -->
         <div class="section" id="retrospective">
-            <div class="card" style="margin-bottom: 24px;">
-                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">새 회고 작성</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 14px;">
-                    이번 주의 성과와 개선할 점을 기록해보세요.
-                </p>
-                <textarea id="newRetrospectiveText" placeholder="예: 이번 주에는 운동을 5번 했는데, 아임웹 작업에 더 집중하고 싶다. 다음 주에는..."></textarea>
-                <button class="btn btn-primary" id="addRetrospectiveBtn" style="margin-top: 12px;">추가</button>
+            <div class="card">
+                <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">새 회고</h3>
+                <textarea id="newRetrospectiveText" placeholder="오늘의 성과와 개선점을 기록하세요"></textarea>
+                <button class="btn btn-primary" id="addRetrospectiveBtn" style="width: 100%; margin-top: 12px;">추가</button>
             </div>
 
-            <div style="margin-bottom: 24px;">
-                <div class="stat-filter-tabs">
-                    <button class="stat-filter-btn active" data-filter="retrospective" data-period="week">📅 주</button>
-                    <button class="stat-filter-btn" data-filter="retrospective" data-period="month">📅 월</button>
-                    <button class="stat-filter-btn" data-filter="retrospective" data-period="year">📅 연</button>
-                </div>
+            <div class="stat-filter-tabs" style="margin-top: 20px;">
+                <button class="stat-filter-btn active" data-filter="retrospective" data-period="week">주</button>
+                <button class="stat-filter-btn" data-filter="retrospective" data-period="month">월</button>
+                <button class="stat-filter-btn" data-filter="retrospective" data-period="year">연</button>
             </div>
 
             <div class="chart-header">
                 <h3 id="retrospectiveTitle">이번 주 회고</h3>
             </div>
-            <div class="retrospective-list" id="retrospectiveList"></div>
+            <div id="retrospectiveList"></div>
 
-            <div class="card" style="margin-top: 32px;">
-                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">📊 통계</h3>
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">통계</h3>
                 <div id="retrospectiveStats"></div>
             </div>
         </div>
     </div>
 
-    <!-- 습관 추가/수정 모달 -->
+    <!-- 습관 모달 -->
     <div class="modal" id="habitModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -890,20 +817,20 @@
 
             <div class="form-group">
                 <label class="form-label">습관 이름</label>
-                <input type="text" id="habitNameInput" class="form-input" placeholder="예: 독서, 운동, 명상...">
+                <input type="text" id="habitNameInput" class="form-input" placeholder="예: 독서, 운동">
             </div>
 
             <div class="form-group">
-                <label class="form-label">아이콘 선택</label>
-                <div style="margin-bottom: 16px; display: flex; gap: 12px;">
+                <label class="form-label">아이콘</label>
+                <div style="display: flex; gap: 12px; margin-bottom: 12px;">
                     <div class="icon-preview" id="iconPreview">💰</div>
-                    <input type="text" id="customIconInput" class="form-input" placeholder="이모지 입력" maxlength="2" style="flex: 1;">
+                    <input type="text" id="customIconInput" class="form-input" placeholder="이모지" maxlength="2" style="flex: 1;">
                 </div>
                 <div class="icon-picker" id="iconPicker"></div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">색상 선택</label>
+                <label class="form-label">색상</label>
                 <div class="color-picker" id="colorPicker"></div>
             </div>
 
@@ -921,7 +848,7 @@
             { id: 'reading', name: '독서', icon: '📚', color: '#f59e0b' }
         ];
 
-        const ICON_OPTIONS = ['💰', '💪', '📚', '🎯', '💻', '🎨', '📝', '🧠', '🏃', '🎮', '📖', '🏋️', '🚴', '🧘', '⚽', '🎭', '🎵', '📊', '🚀', '✨', '⭐', '🔥', '💡', '🎪'];
+        const ICON_OPTIONS = ['💰', '💪', '📚', '🎯', '💻', '🎨', '📝', '🧠', '🏃', '🎮', '📖', '🏋️', '🚴', '🧘', '⚽', '🎭', '🎵', '📊', '🚀', '✨'];
         const COLOR_OPTIONS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#14b8a6'];
 
         const POINTS_PER_HABIT = 10;
@@ -929,7 +856,6 @@
 
         let state = { habits: DEFAULT_HABITS, history: [], totalPoints: 0, retrospectives: [] };
         let editingHabitId = null;
-        let editingRetrospectiveId = null;
         let selectedIcon = '💰';
         let selectedColor = '#6366f1';
         let currentStatsPeriod = 'week';
@@ -969,20 +895,16 @@
             document.getElementById('totalPoints').textContent = state.totalPoints;
 
             const habitList = document.getElementById('habitList');
-            if (state.habits.length === 0) {
-                habitList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">추가된 습관이 없어요</p></div>';
-            } else {
-                habitList.innerHTML = state.habits.map(habit => `
-                    <div class="habit-item ${todayData.completed[habit.id] ? 'completed' : ''}" onclick="toggleHabit('${habit.id}')">
-                        <div class="habit-icon">${habit.icon}</div>
-                        <div class="habit-info">
-                            <div class="habit-name">${habit.name}</div>
-                            <div class="habit-xp">+${POINTS_PER_HABIT} XP</div>
-                        </div>
-                        <div class="habit-status">${todayData.completed[habit.id] ? '✓' : '○'}</div>
+            habitList.innerHTML = state.habits.map(habit => `
+                <div class="habit-item ${todayData.completed[habit.id] ? 'completed' : ''}" onclick="toggleHabit('${habit.id}')">
+                    <div class="habit-icon">${habit.icon}</div>
+                    <div class="habit-info">
+                        <div class="habit-name">${habit.name}</div>
+                        <div class="habit-xp">+${POINTS_PER_HABIT} XP</div>
                     </div>
-                `).join('');
-            }
+                    <div class="habit-status">${todayData.completed[habit.id] ? '✓' : '○'}</div>
+                </div>
+            `).join('');
 
             const streakGrid = document.getElementById('streakGrid');
             streakGrid.innerHTML = state.habits.map(habit => {
@@ -995,7 +917,6 @@
                     <div class="stat-card">
                         <div class="stat-label">${habit.name}</div>
                         <div class="stat-value">${streak}</div>
-                        <div class="stat-label" style="margin-top: 8px; font-size: 11px;">일 연속</div>
                     </div>
                 `;
             }).join('');
@@ -1007,19 +928,17 @@
 
         function updateStats(period = 'week') {
             currentStatsPeriod = period;
-
-            let days;
-            let title;
+            let days, title;
 
             if (period === 'week') {
                 days = 7;
-                title = '지난 7일 습관 이행';
+                title = '지난 7일';
             } else if (period === 'month') {
                 days = 30;
-                title = '지난 30일 습관 이행';
+                title = '지난 30일';
             } else if (period === 'year') {
                 days = 365;
-                title = '지난 365일 습관 이행';
+                title = '지난 365일';
             }
 
             document.getElementById('chartTitle').textContent = title;
@@ -1032,13 +951,9 @@
                 const dayData = state.history.find(h => h.date === dateStr) || { completed: {} };
                 
                 let showLabel = false;
-                if (period === 'week') {
-                    showLabel = true;
-                } else if (period === 'month' && i % 5 === 0) {
-                    showLabel = true;
-                } else if (period === 'year' && i % 7 === 0) {
-                    showLabel = true;
-                }
+                if (period === 'week') showLabel = true;
+                else if (period === 'month' && i % 5 === 0) showLabel = true;
+                else if (period === 'year' && i % 7 === 0) showLabel = true;
 
                 last_n_days.push({
                     date: showLabel ? d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '',
@@ -1061,49 +976,36 @@
                     </div>
                 `).join('');
             } else {
-                weekChart.innerHTML = `
-                    <div style="grid-column: 1 / -1; padding: 16px; background: var(--bg); border-radius: 8px;">
-                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                            ${period === 'month' ? '(5일 단위로 표시)' : '(주 단위로 표시)'}
+                weekChart.innerHTML = last_n_days.map((day) => {
+                    if (!day.date) return '';
+                    return `
+                        <div style="font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                            <span>${day.date}</span>
+                            <div style="display: flex; gap: 2px;">
+                                ${state.habits.map(habit => {
+                                    const completed = day.dayData.completed[habit.id] ? 1 : 0;
+                                    return `<div class="day-box" style="width: 14px; height: 14px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : ''}"></div>`;
+                                }).join('')}
+                            </div>
                         </div>
-                        ${last_n_days.map((day) => {
-                            if (!day.date) return '';
-                            const completedCount = state.habits.filter(h => day.dayData.completed[h.id]).length;
-                            return `
-                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
-                                    <span style="font-size: 12px; font-weight: 600;">${day.date}</span>
-                                    <div style="display: flex; gap: 2px;">
-                                        ${state.habits.map(habit => {
-                                            const completed = day.dayData.completed[habit.id] ? 1 : 0;
-                                            return `<div class="day-box" style="width: 16px; height: 16px; ${completed ? 'background: linear-gradient(135deg, #6366f1, #ec4899);' : ''}"></div>`;
-                                        }).join('')}
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
+                    `;
+                }).join('');
             }
 
             const stats = state.habits.map(habit => {
-                const completed = state.history
-                    .filter(h => {
-                        const hDate = new Date(h.date);
-                        const now = new Date();
-                        const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
-                        return daysDiff < days && h.completed[habit.id];
-                    }).length;
+                const completed = state.history.filter(h => {
+                    const hDate = new Date(h.date);
+                    const now = new Date();
+                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+                    return daysDiff < days && h.completed[habit.id];
+                }).length;
                 
-                const total = (() => {
-                    let count = 0;
-                    for (let i = 0; i < days; i++) {
-                        const d = new Date();
-                        d.setDate(d.getDate() - i);
-                        const dateStr = d.toISOString().split('T')[0];
-                        if (state.history.find(h => h.date === dateStr)) count++;
-                    }
-                    return Math.max(count, 1);
-                })();
+                const total = Math.max(1, state.history.filter(h => {
+                    const hDate = new Date(h.date);
+                    const now = new Date();
+                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+                    return daysDiff < days;
+                }).length);
 
                 const percent = Math.round((completed / total) * 100);
                 return { name: habit.name, completed, total, percent };
@@ -1111,15 +1013,15 @@
 
             const statsList = document.getElementById('statsList');
             statsList.innerHTML = stats.map(stat => `
-                <div class="card" style="margin-bottom: 12px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                        <span style="font-weight: 600;">${stat.name}</span>
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-weight: 600; font-size: 15px;">${stat.name}</span>
                         <span style="background: linear-gradient(135deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">${stat.percent}%</span>
                     </div>
-                    <div class="xp-bar" style="margin-bottom: 8px;">
+                    <div class="xp-bar">
                         <div class="xp-fill" style="width: ${stat.percent}%; background: linear-gradient(135deg, #6366f1, #ec4899);"></div>
                     </div>
-                    <div style="font-size: 12px; color: var(--text-secondary);">${stat.completed}회 / ${stat.total}회</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">${stat.completed} / ${stat.total}</div>
                 </div>
             `).join('');
 
@@ -1130,24 +1032,19 @@
             const days = currentStatsPeriod === 'week' ? 7 : currentStatsPeriod === 'month' ? 30 : 365;
             
             const stats = state.habits.map(habit => {
-                const completed = state.history
-                    .filter(h => {
-                        const hDate = new Date(h.date);
-                        const now = new Date();
-                        const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
-                        return daysDiff < days && h.completed[habit.id];
-                    }).length;
+                const completed = state.history.filter(h => {
+                    const hDate = new Date(h.date);
+                    const now = new Date();
+                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+                    return daysDiff < days && h.completed[habit.id];
+                }).length;
                 
-                const total = (() => {
-                    let count = 0;
-                    for (let i = 0; i < days; i++) {
-                        const d = new Date();
-                        d.setDate(d.getDate() - i);
-                        const dateStr = d.toISOString().split('T')[0];
-                        if (state.history.find(h => h.date === dateStr)) count++;
-                    }
-                    return Math.max(count, 1);
-                })();
+                const total = Math.max(1, state.history.filter(h => {
+                    const hDate = new Date(h.date);
+                    const now = new Date();
+                    const daysDiff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+                    return daysDiff < days;
+                }).length);
 
                 const percent = Math.round((completed / total) * 100);
                 return { name: habit.name, completed, total, percent };
@@ -1159,36 +1056,32 @@
                 ${stats.map(stat => `
                     <div class="stat-row">
                         <span class="stat-row-label">${stat.name}</span>
-                        <span class="stat-row-value">${stat.completed}회 (${stat.percent}%)</span>
+                        <span class="stat-row-value">${stat.completed}회</span>
                     </div>
                 `).join('')}
                 <div class="stat-row" style="border-top: 2px solid var(--border); padding-top: 12px;">
-                    <span class="stat-row-label" style="font-weight: 700;">이번 ${periodLabel} 총 경험치</span>
-                    <span class="stat-row-value" style="font-size: 16px;">+${state.totalPoints} XP</span>
+                    <span class="stat-row-label" style="font-weight: 700;">이번 ${periodLabel}</span>
+                    <span class="stat-row-value">+${state.totalPoints} XP</span>
                 </div>
             `;
         }
 
         function updateHabitsManageList() {
             const list = document.getElementById('habitsManageList');
-            if (state.habits.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">추가된 습관이 없어요</p></div>';
-            } else {
-                list.innerHTML = state.habits.map(habit => `
-                    <div class="manage-item">
-                        <div class="manage-left">
-                            <div class="manage-icon-display">${habit.icon}</div>
-                            <div class="manage-info">
-                                <div class="manage-name">${habit.name}</div>
-                            </div>
-                        </div>
-                        <div class="manage-buttons">
-                            <button class="btn btn-secondary btn-sm" onclick="editHabit('${habit.id}')">수정</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteHabit('${habit.id}')">삭제</button>
+            list.innerHTML = state.habits.map(habit => `
+                <div class="manage-item">
+                    <div class="manage-left">
+                        <div class="manage-icon-display">${habit.icon}</div>
+                        <div class="manage-info">
+                            <div class="manage-name">${habit.name}</div>
                         </div>
                     </div>
-                `).join('');
-            }
+                    <div class="manage-buttons">
+                        <button class="btn btn-secondary btn-sm" onclick="editHabit('${habit.id}')">수정</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteHabit('${habit.id}')">삭제</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function updateRetrospectiveList() {
@@ -1203,12 +1096,11 @@
 
             const list = document.getElementById('retrospectiveList');
             const periodLabel = currentRetrospectivePeriod === 'week' ? '주' : currentRetrospectivePeriod === 'month' ? '월' : '연';
-            document.getElementById('retrospectiveTitle').textContent = `이번 ${periodLabel} 회고`;
+            document.getElementById('retrospectiveTitle').textContent = `이번 ${periodLabel}`;
 
-            if (filtered.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><p class="empty-state-text">작성된 회고가 없어요</p></div>';
-            } else {
-                list.innerHTML = filtered.map(r => `
+            list.innerHTML = filtered.length === 0 ? 
+                '<div class="empty-state"><div class="empty-state-icon">📝</div><p class="empty-state-text">회고가 없어요</p></div>' :
+                filtered.map(r => `
                     <div class="retrospective-item">
                         <div class="retrospective-header">
                             <div class="retrospective-date">${new Date(r.date).toLocaleString('ko-KR')}</div>
@@ -1220,7 +1112,6 @@
                         <div class="retrospective-content">${r.content}</div>
                     </div>
                 `).join('');
-            }
         }
 
         function toggleHabit(habitId) {
@@ -1244,7 +1135,6 @@
             updateUI();
         }
 
-        // 습관 관련 함수들
         function openAddHabitDialog() {
             editingHabitId = null;
             selectedIcon = '💰';
@@ -1253,7 +1143,7 @@
             document.getElementById('habitNameInput').value = '';
             document.getElementById('customIconInput').value = '';
             renderIconAndColorPickers();
-            updateIconPreview();
+            document.getElementById('iconPreview').textContent = selectedIcon;
             document.getElementById('habitModal').classList.add('active');
             document.getElementById('habitNameInput').focus();
         }
@@ -1269,12 +1159,12 @@
             document.getElementById('habitNameInput').value = habit.name;
             document.getElementById('customIconInput').value = habit.icon;
             renderIconAndColorPickers();
-            updateIconPreview();
+            document.getElementById('iconPreview').textContent = selectedIcon;
             document.getElementById('habitModal').classList.add('active');
         }
 
         function deleteHabit(habitId) {
-            if (!confirm('정말로 이 습관을 삭제하시겠습니까?')) return;
+            if (!confirm('삭제하시겠습니까?')) return;
             state.habits = state.habits.filter(h => h.id !== habitId);
             saveState();
             updateUI();
@@ -1288,40 +1178,35 @@
 
             const colorPicker = document.getElementById('colorPicker');
             colorPicker.innerHTML = COLOR_OPTIONS.map(color => `
-                <div class="color-option ${color === selectedColor ? 'selected' : ''}" style="background: ${color}; cursor: pointer;" onclick="selectColor('${color}')"></div>
+                <div class="color-option ${color === selectedColor ? 'selected' : ''}" style="background: ${color};" onclick="selectColor('${color}')"></div>
             `).join('');
         }
 
         function selectIcon(icon) {
             selectedIcon = icon;
             document.getElementById('customIconInput').value = icon;
+            document.getElementById('iconPreview').textContent = icon;
             document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
             document.querySelectorAll('.icon-option').forEach(el => {
                 if (el.textContent === icon) el.classList.add('selected');
             });
-            updateIconPreview();
         }
 
         function selectColor(color) {
             selectedColor = color;
             document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
             document.querySelectorAll('.color-option').forEach(el => {
-                const bgColor = window.getComputedStyle(el).backgroundColor;
-                if (bgColor.includes(color.substring(1)) || el.style.backgroundColor.includes(color.substring(1))) {
+                if (el.style.backgroundColor.includes(color.substring(1))) {
                     el.classList.add('selected');
                 }
             });
-        }
-
-        function updateIconPreview() {
-            document.getElementById('iconPreview').textContent = selectedIcon;
         }
 
         document.getElementById('customIconInput').addEventListener('input', (e) => {
             const value = e.target.value.trim();
             if (value) {
                 selectedIcon = value;
-                updateIconPreview();
+                document.getElementById('iconPreview').textContent = value;
                 document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
             }
         });
@@ -1346,8 +1231,7 @@
                     habit.color = selectedColor;
                 }
             } else {
-                const newId = 'habit_' + Date.now();
-                state.habits.push({ id: newId, name, icon: selectedIcon, color: selectedColor });
+                state.habits.push({ id: 'habit_' + Date.now(), name, icon: selectedIcon, color: selectedColor });
             }
 
             saveState();
@@ -1355,7 +1239,6 @@
             closeHabitDialog();
         }
 
-        // 회고 관련 함수들
         function addRetrospective() {
             const text = document.getElementById('newRetrospectiveText').value.trim();
             if (!text) {
@@ -1378,7 +1261,7 @@
             const retro = state.retrospectives.find(r => r.id === id);
             if (!retro) return;
 
-            const newContent = prompt('회고 내용을 수정해주세요:', retro.content);
+            const newContent = prompt('회고 내용:', retro.content);
             if (newContent !== null && newContent.trim()) {
                 retro.content = newContent.trim();
                 retro.date = new Date().toISOString();
@@ -1388,24 +1271,23 @@
         }
 
         function deleteRetrospective(id) {
-            if (!confirm('이 회고를 삭제하시겠습니까?')) return;
+            if (!confirm('삭제하시겠습니까?')) return;
             state.retrospectives = state.retrospectives.filter(r => r.id !== id);
             saveState();
             updateRetrospectiveList();
         }
 
-        // 탭 전환
+        // 탭
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                
                 btn.classList.add('active');
                 document.getElementById(btn.dataset.tab).classList.add('active');
             });
         });
 
-        // 통계 필터
+        // 필터
         document.querySelectorAll('.stat-filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const filter = btn.dataset.filter;
@@ -1417,14 +1299,14 @@
                     currentRetrospectivePeriod = period;
                     updateRetrospectiveList();
                 } else {
-                    document.querySelectorAll('[data-filter]:not([data-filter="retrospective"])').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('[data-period]:not([data-filter])').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     updateStats(period);
                 }
             });
         });
 
-        // 버튼 이벤트
+        // 버튼
         document.getElementById('addHabitBtn').addEventListener('click', openAddHabitDialog);
         document.getElementById('saveHabitBtn').addEventListener('click', saveHabit);
         document.getElementById('cancelHabitBtn').addEventListener('click', closeHabitDialog);
@@ -1434,22 +1316,14 @@
             if (e.key === 'Enter') saveHabit();
         });
 
-        document.getElementById('newRetrospectiveText').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && e.ctrlKey) addRetrospective();
-        });
-
         document.getElementById('habitModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('habitModal')) closeHabitDialog();
         });
 
-        // Service Worker 등록
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js').catch(err => {
-                console.log('Service Worker 등록 실패:', err);
-            });
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
         }
 
-        // 초기화
         loadState();
         updateUI();
     </script>
