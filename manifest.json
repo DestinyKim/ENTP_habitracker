@@ -2,7 +2,7 @@
   "name": "습관 트래커 - ENTP를 위한 게임화 습관 관리",
   "short_name": "습관 트래커",
   "description": "ENTP 성향에 맞춘 게임화 습관 추적 애플리케이션. 레벨업, 경험치, 통계로 흥미있게 관리하세요.",
-  "start_url": "/",
+  "start_url": "/ENTP_habitracker",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
