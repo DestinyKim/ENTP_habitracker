@@ -1,5 +1,5 @@
 // 캐시 버전 - 파일을 수정할 때마다 이 숫자를 올리면 기존 캐시가 자동 갱신됩니다
-const CACHE_VERSION = 'momentum-v2';
+const CACHE_VERSION = 'momentum-v3';
 
 // 상대경로 사용 (GitHub Pages 서브경로에서도 안전하게 작동)
 const urlsToCache = [
