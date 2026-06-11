@@ -610,15 +610,29 @@
         }
 
         .todo-options {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-bottom: 18px;
-            flex-wrap: wrap;
+        }
+
+        .todo-field {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .todo-field-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            padding-left: 3px;
         }
 
         .todo-select {
-            flex: 1;
-            min-width: 95px;
+            width: 100%;
+            min-width: 0;
             padding: 11px 12px;
             border: 1.5px solid var(--border);
             border-radius: 12px;
@@ -636,6 +650,254 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             padding-bottom: 4px;
+        }
+
+        /* 빠른 날짜 칩 */
+        .quick-dates {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        /* 입력 영역 섹션 라벨 */
+        .input-section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            margin-bottom: 9px;
+            padding-left: 2px;
+        }
+
+        /* 마감일 빠른 선택 / 목록 보기 구분선 */
+        .section-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 6px 0 16px;
+        }
+
+        /* iOS 날짜 입력 정렬 보정 */
+        input[type="date"].todo-select {
+            text-align: left;
+            -webkit-appearance: none;
+            appearance: none;
+            font-family: inherit;
+            min-height: 44px;
+        }
+
+        .quick-date-chip {
+            padding: 7px 13px;
+            background: var(--bg-soft);
+            border: 1.5px solid var(--border);
+            border-radius: 18px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .quick-date-chip:active {
+            transform: scale(0.94);
+        }
+
+        .quick-date-chip.active {
+            background: var(--grad);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* 날짜별 그룹 헤더 */
+        .date-group-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin: 20px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-group-header.first { margin-top: 4px; }
+
+        .date-group-header.overdue-group { color: var(--danger); }
+
+        .date-group-count {
+            background: var(--bg-soft);
+            color: var(--text-tertiary);
+            font-size: 11px;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* 캘린더 뷰 */
+        .calendar-wrap {
+            margin-bottom: 18px;
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .calendar-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        .calendar-nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .calendar-nav-btn:active { transform: scale(0.92); }
+
+        .calendar-today-btn {
+            padding: 0 14px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            padding: 4px 0;
+        }
+
+        .calendar-weekday.sun { color: var(--danger); }
+        .calendar-weekday.sat { color: var(--primary); }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            border: 1.5px solid transparent;
+            background: var(--bg-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s;
+            min-height: 38px;
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .calendar-day-num {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .calendar-day.today {
+            border-color: var(--primary);
+        }
+
+        .calendar-day.today .calendar-day-num {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .calendar-day.selected {
+            background: var(--grad);
+        }
+
+        .calendar-day.selected .calendar-day-num {
+            color: white;
+        }
+
+        .calendar-day.has-overdue:not(.selected) {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .calendar-dots {
+            display: flex;
+            gap: 2px;
+            margin-top: 3px;
+            height: 5px;
+        }
+
+        .calendar-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .calendar-dot.done { background: var(--success); }
+        .calendar-dot.overdue { background: var(--danger); }
+
+        .calendar-day.selected .calendar-dot {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .calendar-count-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--secondary);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+        }
+
+        .calendar-day.selected .calendar-count-badge {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .calendar-selected-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 18px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .chip {
@@ -746,6 +1008,11 @@
         .badge-due.overdue {
             background: rgba(239, 68, 68, 0.12);
             color: var(--danger);
+        }
+
+        .badge-repeat {
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--primary);
         }
 
         .todo-actions {
@@ -1266,17 +1533,48 @@
             </div>
 
             <div class="todo-options">
-                <select id="todoCategorySelect" class="todo-select"></select>
-                <select id="todoPrioritySelect" class="todo-select">
-                    <option value="high">🔴 높음 (+50)</option>
-                    <option value="medium" selected>🟡 중간 (+30)</option>
-                    <option value="low">🟢 낮음 (+10)</option>
-                </select>
-                <input type="date" id="todoDueInput" class="todo-select">
+                <div class="todo-field">
+                    <label class="todo-field-label">카테고리</label>
+                    <select id="todoCategorySelect" class="todo-select"></select>
+                </div>
+                <div class="todo-field">
+                    <label class="todo-field-label">우선순위</label>
+                    <select id="todoPrioritySelect" class="todo-select">
+                        <option value="high">🔴 높음 (+50)</option>
+                        <option value="medium" selected>🟡 중간 (+30)</option>
+                        <option value="low">🟢 낮음 (+10)</option>
+                    </select>
+                </div>
+                <div class="todo-field">
+                    <label class="todo-field-label">반복</label>
+                    <select id="todoRepeatSelect" class="todo-select">
+                        <option value="">🔁 반복 없음</option>
+                        <option value="daily">🔁 매일</option>
+                        <option value="weekly">🔁 매주</option>
+                    </select>
+                </div>
+                <div class="todo-field">
+                    <label class="todo-field-label">날짜</label>
+                    <input type="date" id="todoDueInput" class="todo-select">
+                </div>
             </div>
 
+            <div class="input-section-label">📅 마감일 빠른 선택</div>
+            <div class="quick-dates" id="quickDates">
+                <span class="quick-date-chip" data-quickdate="today">📅 오늘</span>
+                <span class="quick-date-chip" data-quickdate="tomorrow">🌅 내일</span>
+                <span class="quick-date-chip" data-quickdate="weekend">🎉 주말</span>
+                <span class="quick-date-chip" data-quickdate="nextweek">📆 다음 주</span>
+                <span class="quick-date-chip" data-quickdate="clear">✖️ 날짜 없음</span>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="input-section-label">👁️ 목록 보기</div>
             <div class="filter-chips" id="todoFilters">
                 <button class="chip active" data-todofilter="all">전체</button>
+                <button class="chip" data-todofilter="calendar">📅 캘린더</button>
+                <button class="chip" data-todofilter="bydate">📆 날짜별</button>
                 <button class="chip" data-todofilter="today">오늘</button>
                 <button class="chip" data-todofilter="high">높은 우선순위</button>
                 <button class="chip" data-todofilter="overdue">마감 임박</button>
@@ -1331,11 +1629,14 @@
                     데이터를 파일로 내보내 백업하거나, 백업 파일을 불러와 복구할 수 있어요. 기기를 바꿀 때도 유용해요.
                 </p>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn btn-secondary btn-full" id="exportBtn">⬇️ 내보내기</button>
+                    <button class="btn btn-secondary btn-full" id="exportBtn" style="position:relative;">⬇️ 내보내기 <span id="exportBadge" style="display:none; position:absolute; top:-8px; right:-8px; background:var(--secondary); color:white; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:700;">Premium</span></button>
                     <button class="btn btn-secondary btn-full" id="importBtn">⬆️ 불러오기</button>
                 </div>
                 <input type="file" id="importFile" accept="application/json,.json" style="display:none;">
             </div>
+
+            <div class="section-title">⭐ Momentum Premium</div>
+            <div class="card" id="premiumSection"></div>
         </div>
 
         <!-- 회고 -->
@@ -1432,7 +1733,7 @@
 
     <script>
         const DEFAULT_HABITS = [
-            { id: 'aimp', name: '아임웹 수익화', icon: '💰', color: '#6366f1' },
+            { id: 'water', name: '물 마시기', icon: '💧', color: '#3b82f6' },
             { id: 'exercise', name: '운동', icon: '💪', color: '#10b981' },
             { id: 'reading', name: '독서', icon: '📚', color: '#f59e0b' }
         ];
@@ -1441,7 +1742,7 @@
             { id: 'cat_work', name: '일', icon: '💼', color: '#6366f1' },
             { id: 'cat_personal', name: '개인', icon: '🎯', color: '#ec4899' },
             { id: 'cat_study', name: '학습', icon: '📚', color: '#f59e0b' },
-            { id: 'cat_aimweb', name: '아임웹', icon: '💰', color: '#10b981' },
+            { id: 'cat_health', name: '건강', icon: '🍎', color: '#10b981' },
             { id: 'cat_etc', name: '기타', icon: '📌', color: '#64748b' }
         ];
 
@@ -1467,6 +1768,8 @@
         let selectedStatsYear = new Date().getFullYear();
         let selectedRetroYear = new Date().getFullYear();
         let currentTodoFilter = 'all';
+        let calendarMonth = new Date(); // 캘린더에서 보고 있는 월
+        let selectedCalendarDate = null; // 캘린더에서 선택한 날짜 (YYYY-MM-DD)
 
         function loadState() {
             const saved = localStorage.getItem('momentumData') || localStorage.getItem('habitTrackerData');
@@ -1487,6 +1790,99 @@
 
         function saveState() {
             localStorage.setItem('momentumData', JSON.stringify(state));
+        }
+
+        // 로컬(기기 시간대) 기준 날짜 문자열 YYYY-MM-DD 반환
+        // toISOString()은 UTC 기준이라 한국 등 시간대에서 날짜가 어긋나므로 사용하지 않음
+        function getLocalDate(date) {
+            const d = date || new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        // ===== 프리미엄 구독 =====
+        function isPremium() {
+            return localStorage.getItem('momentumPremium') === 'true';
+        }
+
+        function setPremium(value) {
+            localStorage.setItem('momentumPremium', value ? 'true' : 'false');
+            if (!value) {
+                localStorage.removeItem('momentumLicenseKey');
+            }
+            initPremium();
+            updateUI();
+        }
+
+        function activateLicense(key) {
+            // 라이센스 키 형식: 간단하게 32자 이상으로 (Gumroad가 자동 생성)
+            if (!key || key.trim().length < 20) {
+                alert('유효한 라이센스 키를 입력해주세요.');
+                return;
+            }
+            localStorage.setItem('momentumLicenseKey', key.trim());
+            localStorage.setItem('momentumPremium', 'true');
+            alert('🎉 Premium 활성화 완료!');
+            initPremium();
+            updateUI();
+        }
+
+        function initPremium() {
+            const premium = isPremium();
+            const section = document.getElementById('premiumSection');
+            
+            if (premium) {
+                const key = localStorage.getItem('momentumLicenseKey');
+                section.innerHTML = `
+                    <div style="text-align:center; padding:14px;">
+                        <div style="font-size:40px; margin-bottom:10px;">👑</div>
+                        <div style="font-weight:700; font-size:16px; color:var(--secondary); margin-bottom:4px;">Premium 활성화됨</div>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">
+                            무제한 데이터 내보내기 및 우선 개선 기능이 활성화되었어요!
+                        </div>
+                        <button class="btn btn-danger btn-full" onclick="setPremium(false)" style="margin-bottom:10px;">구독 취소</button>
+                    </div>
+                    <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px; font-size:11px; color:var(--text-tertiary);">
+                        🔑 라이센스: ${key ? key.substring(0, 8) + '...' : '???'}
+                    </div>
+                `;
+            } else {
+                section.innerHTML = `
+                    <div style="padding:16px;">
+                        <div style="margin-bottom:16px;">
+                            <div style="font-size:14px; font-weight:700; margin-bottom:10px; color:var(--secondary);">✨ Premium 특전</div>
+                            <div style="font-size:13px; color:var(--text-secondary); line-height:1.9; margin-bottom:16px;">
+                                📥 무제한 데이터 내보내기<br/>
+                                🗳️ 우선 기능 개선 투표<br/>
+                                🎁 향후 더 많은 혜택 추가<br/>
+                                💰 단 월 $2.99
+                            </div>
+                        </div>
+
+                        <div style="background:var(--bg-soft); border-radius:12px; padding:14px; margin-bottom:14px;">
+                            <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:10px;">📌 구독하고 라이센스 키 받으세요</div>
+                            <a href="https://gumroad.com/GUMROAD_USERNAME/l/momentum-premium" target="_blank" style="text-decoration:none; display:block; margin-bottom:10px;">
+                                <button class="btn btn-primary btn-full">💳 Gumroad에서 구독 (월 $2.99)</button>
+                            </a>
+                            <div style="font-size:11px; color:var(--text-tertiary); line-height:1.6; margin-bottom:10px;">
+                                ↓ 구독 후 받은 라이센스 키를 아래에 입력하세요 ↓
+                            </div>
+                            <input type="text" id="licenseKeyInput" placeholder="라이센스 키 입력..." class="form-input" style="font-size:13px; margin-bottom:8px;">
+                            <button class="btn btn-secondary btn-full" onclick="
+                                const key = document.getElementById('licenseKeyInput').value;
+                                if (key) activateLicense(key);
+                            ">✅ 라이센스 인증</button>
+                        </div>
+
+                        <div style="background:rgba(99,102,241,0.08); border-radius:12px; padding:12px; font-size:12px; color:var(--text-secondary);">
+                            <div style="font-weight:600; margin-bottom:6px;">❓ 라이센스 키를 못 받았나요?</div>
+                            Gumroad 가입 후 이메일을 확인하세요. 라이센스 키가 자동으로 발급됩니다.
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         // ===== 다크 모드 =====
@@ -1521,17 +1917,35 @@
 
         // ===== 데이터 백업 / 복구 =====
         function exportData() {
-            const dataStr = JSON.stringify(state, null, 2);
+            const premium = isPremium();
+            let dataToExport = { ...state };
+
+            // 무료: 최근 60일만 내보내기
+            if (!premium) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - 60);
+                const cutoffStr = getLocalDate(cutoffDate);
+                dataToExport.history = state.history.filter(h => h.date >= cutoffStr);
+                dataToExport.retrospectives = state.retrospectives.filter(r => new Date(r.date) >= cutoffDate);
+            }
+
+            const dataStr = JSON.stringify(dataToExport, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            const date = new Date().toISOString().split('T')[0];
+            const date = getLocalDate();
             a.href = url;
-            a.download = `momentum-backup-${date}.json`;
+            a.download = `momentum-${premium ? 'premium-' : ''}backup-${date}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+
+            if (!premium) {
+                alert('📌 무료 버전은 최근 60일 데이터만 내보내집니다.\n\n👑 Premium 구독하면 전체 데이터를 무제한으로 내보낼 수 있어요!');
+            } else {
+                alert('✅ 전체 데이터가 내보내졌습니다. (Premium)');
+            }
         }
 
         function importData(file) {
@@ -1581,7 +1995,7 @@
             while (cur <= today) {
                 const week = [];
                 for (let d = 0; d < 7; d++) {
-                    const dateStr = cur.toISOString().split('T')[0];
+                    const dateStr = getLocalDate(cur);
                     const count = histMap[dateStr] || 0;
                     const ratio = count / habitCount;
                     let level = 0;
@@ -1729,7 +2143,13 @@
 
         // ===== 메인 UI =====
         function updateUI() {
-            const today = new Date().toISOString().split('T')[0];
+            // 프리미엄 배지 업데이트
+            const badge = document.getElementById('exportBadge');
+            if (badge) {
+                badge.style.display = isPremium() ? 'block' : 'none';
+            }
+
+            const today = getLocalDate();
             const todayData = state.history.find(h => h.date === today) || { date: today, completed: {} };
 
             const level = Math.floor(state.totalPoints / POINTS_PER_LEVEL) + 1;
@@ -1786,7 +2206,7 @@
 
         // ===== 습관 =====
         function toggleHabit(habitId) {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getLocalDate();
             let todayData = state.history.find(h => h.date === today);
             if (!todayData) {
                 todayData = { date: today, completed: {} };
@@ -1810,6 +2230,32 @@
             if (prev && state.categories.some(c => c.name === prev)) select.value = prev;
         }
 
+        // ===== 빠른 날짜 선택 =====
+        function getQuickDate(type) {
+            const d = new Date();
+            if (type === 'today') return getLocalDate(d);
+            if (type === 'tomorrow') { d.setDate(d.getDate() + 1); return getLocalDate(d); }
+            if (type === 'weekend') {
+                // 이번 주 토요일 (오늘이 토/일이면 그대로/돌아오는 토요일)
+                const day = d.getDay(); // 0=일 ... 6=토
+                let daysToSat = (6 - day + 7) % 7;
+                d.setDate(d.getDate() + daysToSat);
+                return getLocalDate(d);
+            }
+            if (type === 'nextweek') { d.setDate(d.getDate() + 7); return getLocalDate(d); }
+            return null; // clear
+        }
+
+        function setQuickDate(type) {
+            const dueInput = document.getElementById('todoDueInput');
+            const val = getQuickDate(type);
+            dueInput.value = val || '';
+            // 활성 표시
+            document.querySelectorAll('.quick-date-chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.quickdate === type);
+            });
+        }
+
         function addTodo() {
             const input = document.getElementById('todoInput');
             const text = input.value.trim();
@@ -1821,15 +2267,27 @@
                 category: document.getElementById('todoCategorySelect').value,
                 priority: document.getElementById('todoPrioritySelect').value,
                 due: document.getElementById('todoDueInput').value || null,
+                repeat: document.getElementById('todoRepeatSelect').value || null,
                 done: false,
+                spawned: false,
                 createdAt: new Date().toISOString(),
                 completedAt: null
             });
 
             input.value = '';
             document.getElementById('todoDueInput').value = '';
+            document.getElementById('todoRepeatSelect').value = '';
+            document.querySelectorAll('.quick-date-chip').forEach(c => c.classList.remove('active'));
             saveState();
             updateUI();
+        }
+
+        // 반복 할일의 다음 마감일 계산
+        function getNextDue(dueStr, repeat) {
+            const base = dueStr ? new Date(dueStr + 'T00:00') : new Date();
+            if (repeat === 'daily') base.setDate(base.getDate() + 1);
+            else if (repeat === 'weekly') base.setDate(base.getDate() + 7);
+            return getLocalDate(base);
         }
 
         function toggleTodo(id) {
@@ -1846,6 +2304,23 @@
                     if (new Date() <= dueDate) bonus = 10;
                 }
                 state.totalPoints += xp + bonus;
+
+                // 반복 할일: 완료 시 다음 주기 할일을 1회 자동 생성
+                if (todo.repeat && !todo.spawned) {
+                    state.todos.push({
+                        id: 'todo_' + Date.now() + '_r',
+                        text: todo.text,
+                        category: todo.category,
+                        priority: todo.priority,
+                        due: getNextDue(todo.due, todo.repeat),
+                        repeat: todo.repeat,
+                        done: false,
+                        spawned: false,
+                        createdAt: new Date().toISOString(),
+                        completedAt: null
+                    });
+                    todo.spawned = true;
+                }
             } else {
                 todo.completedAt = null;
                 state.totalPoints = Math.max(0, state.totalPoints - xp);
@@ -1873,7 +2348,7 @@
         }
 
         function getFilteredTodos() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getLocalDate();
             const now = new Date();
             let filtered = [...state.todos];
 
@@ -1918,10 +2393,88 @@
             return { text, overdue };
         }
 
+        function renderTodoItem(todo) {
+            const cat = getCategory(todo.category);
+            const pri = PRIORITY_INFO[todo.priority];
+            const dueInfo = formatDue(todo.due);
+            const xp = TODO_XP[todo.priority];
+            return `
+                <div class="swipe-wrap" data-swipe="todo" data-id="${todo.id}">
+                    <div class="swipe-bg"><span class="left-hint">${todo.done ? '↩️ 취소' : '✓ 완료'}</span><span class="right-hint">삭제 🗑️</span></div>
+                    <div class="todo-item ${todo.done ? 'done' : ''}" style="border-left-color: ${pri.color};">
+                        <div class="todo-checkbox ${todo.done ? 'checked' : ''}" onclick="toggleTodo('${todo.id}')">${todo.done ? '✓' : ''}</div>
+                        <div class="todo-body">
+                            <div class="todo-title">${todo.text}</div>
+                            <div class="todo-meta">
+                                <span class="badge" style="background:${cat.color}22; color:${cat.color};">${cat.icon} ${cat.name}</span>
+                                <span class="badge badge-xp">+${xp} XP</span>
+                                ${todo.repeat ? `<span class="badge badge-repeat">🔁 ${todo.repeat === 'daily' ? '매일' : '매주'}</span>` : ''}
+                                ${dueInfo ? `<span class="badge badge-due ${dueInfo.overdue ? 'overdue' : ''}">📅 ${dueInfo.text}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <button class="icon-btn" onclick="editTodo('${todo.id}')">✏️</button>
+                            <button class="icon-btn" onclick="deleteTodo('${todo.id}')">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTodosByDate(list) {
+            const today = getLocalDate();
+            const tomorrow = getQuickDate('tomorrow');
+            const weekEndDate = new Date();
+            weekEndDate.setDate(weekEndDate.getDate() + 7);
+            const weekEndStr = getLocalDate(weekEndDate);
+
+            const groups = [
+                { key: 'overdue', title: '🔴 지남', cls: 'overdue-group', items: [] },
+                { key: 'today', title: '📅 오늘', cls: '', items: [] },
+                { key: 'tomorrow', title: '🌅 내일', cls: '', items: [] },
+                { key: 'week', title: '📆 이번 주 (7일 내)', cls: '', items: [] },
+                { key: 'later', title: '🗓️ 나중', cls: '', items: [] },
+                { key: 'nodate', title: '⚪ 날짜 없음', cls: '', items: [] },
+                { key: 'done', title: '✅ 완료', cls: '', items: [] }
+            ];
+            const G = {};
+            groups.forEach(g => G[g.key] = g);
+
+            const priOrder = { high: 0, medium: 1, low: 2 };
+            const sorted = [...state.todos].sort((a, b) => {
+                if (a.due && b.due) { if (a.due !== b.due) return a.due < b.due ? -1 : 1; }
+                else if (a.due) return -1;
+                else if (b.due) return 1;
+                return priOrder[a.priority] - priOrder[b.priority];
+            });
+
+            sorted.forEach(t => {
+                if (t.done) { G.done.items.push(t); return; }
+                if (!t.due) { G.nodate.items.push(t); return; }
+                if (t.due < today) G.overdue.items.push(t);
+                else if (t.due === today) G.today.items.push(t);
+                else if (t.due === tomorrow) G.tomorrow.items.push(t);
+                else if (t.due <= weekEndStr) G.week.items.push(t);
+                else G.later.items.push(t);
+            });
+
+            let html = '';
+            let first = true;
+            groups.forEach(g => {
+                if (g.items.length === 0) return;
+                html += `<div class="date-group-header ${g.cls} ${first ? 'first' : ''}">${g.title} <span class="date-group-count">${g.items.length}</span></div>`;
+                html += g.items.map(renderTodoItem).join('');
+                first = false;
+            });
+
+            list.innerHTML = html || '<div class="empty-state"><div class="empty-icon">✅</div><p class="empty-text">할 일이 없어요</p></div>';
+            setupSwipes();
+        }
+
         function updateTodos() {
             const total = state.todos.length;
             const done = state.todos.filter(t => t.done).length;
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getLocalDate();
             const todayCount = state.todos.filter(t => t.due === todayStr && !t.done).length;
 
             document.getElementById('todoSummary').innerHTML = `
@@ -1931,38 +2484,148 @@
             `;
 
             const list = document.getElementById('todoList');
+
+            // 캘린더 보기
+            if (currentTodoFilter === 'calendar') {
+                renderCalendar(list);
+                return;
+            }
+
+            // 날짜별 그룹 보기
+            if (currentTodoFilter === 'bydate') {
+                renderTodosByDate(list);
+                return;
+            }
+
             const filtered = getFilteredTodos();
             if (filtered.length === 0) {
                 list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><p class="empty-text">할 일이 없어요</p></div>';
                 return;
             }
-            list.innerHTML = filtered.map(todo => {
-                const cat = getCategory(todo.category);
-                const pri = PRIORITY_INFO[todo.priority];
-                const dueInfo = formatDue(todo.due);
-                const xp = TODO_XP[todo.priority];
-                return `
-                    <div class="swipe-wrap" data-swipe="todo" data-id="${todo.id}">
-                        <div class="swipe-bg"><span class="left-hint">${todo.done ? '↩️ 취소' : '✓ 완료'}</span><span class="right-hint">삭제 🗑️</span></div>
-                        <div class="todo-item ${todo.done ? 'done' : ''}" style="border-left-color: ${pri.color};">
-                            <div class="todo-checkbox ${todo.done ? 'checked' : ''}" onclick="toggleTodo('${todo.id}')">${todo.done ? '✓' : ''}</div>
-                            <div class="todo-body">
-                                <div class="todo-title">${todo.text}</div>
-                                <div class="todo-meta">
-                                    <span class="badge" style="background:${cat.color}22; color:${cat.color};">${cat.icon} ${cat.name}</span>
-                                    <span class="badge badge-xp">+${xp} XP</span>
-                                    ${dueInfo ? `<span class="badge badge-due ${dueInfo.overdue ? 'overdue' : ''}">📅 ${dueInfo.text}</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="todo-actions">
-                                <button class="icon-btn" onclick="editTodo('${todo.id}')">✏️</button>
-                                <button class="icon-btn" onclick="deleteTodo('${todo.id}')">🗑️</button>
-                            </div>
+            list.innerHTML = filtered.map(renderTodoItem).join('');
+            setupSwipes();
+        }
+
+        // ===== 캘린더 뷰 (3단계) =====
+        const WEEKDAY_KR = ['일', '월', '화', '수', '목', '금', '토'];
+        const MONTH_KR = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+        function renderCalendar(list) {
+            const today = getLocalDate();
+            const year = calendarMonth.getFullYear();
+            const month = calendarMonth.getMonth(); // 0-11
+
+            // 해당 월의 할일을 날짜별로 집계
+            const byDate = {};
+            state.todos.forEach(t => {
+                if (!t.due) return;
+                if (!byDate[t.due]) byDate[t.due] = { total: 0, done: 0, overdue: 0 };
+                byDate[t.due].total++;
+                if (t.done) byDate[t.due].done++;
+                else if (t.due < today) byDate[t.due].overdue++;
+            });
+
+            const firstDay = new Date(year, month, 1);
+            const startWeekday = firstDay.getDay(); // 0=일
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // 헤더
+            let html = `
+                <div class="calendar-wrap">
+                    <div class="calendar-header">
+                        <div class="calendar-title">${year}년 ${MONTH_KR[month]}</div>
+                        <div class="calendar-nav">
+                            <button class="calendar-today-btn" onclick="calendarToToday()">오늘</button>
+                            <button class="calendar-nav-btn" onclick="calendarChangeMonth(-1)">‹</button>
+                            <button class="calendar-nav-btn" onclick="calendarChangeMonth(1)">›</button>
                         </div>
                     </div>
+                    <div class="calendar-grid">
+            `;
+
+            // 요일 헤더
+            WEEKDAY_KR.forEach((w, i) => {
+                const cls = i === 0 ? 'sun' : (i === 6 ? 'sat' : '');
+                html += `<div class="calendar-weekday ${cls}">${w}</div>`;
+            });
+
+            // 빈 칸 (월 시작 전)
+            for (let i = 0; i < startWeekday; i++) {
+                html += `<div class="calendar-day empty"></div>`;
+            }
+
+            // 날짜 칸
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const info = byDate[dateStr];
+                const isToday = dateStr === today;
+                const isSelected = dateStr === selectedCalendarDate;
+
+                let cls = 'calendar-day';
+                if (isToday) cls += ' today';
+                if (isSelected) cls += ' selected';
+                if (info && info.overdue > 0) cls += ' has-overdue';
+
+                let dots = '';
+                let badge = '';
+                if (info) {
+                    const undone = info.total - info.done;
+                    badge = `<div class="calendar-count-badge">${info.total}</div>`;
+                    dots = '<div class="calendar-dots">';
+                    if (info.overdue > 0) dots += '<div class="calendar-dot overdue"></div>';
+                    else if (undone > 0) dots += '<div class="calendar-dot"></div>';
+                    if (info.done > 0) dots += '<div class="calendar-dot done"></div>';
+                    dots += '</div>';
+                } else {
+                    dots = '<div class="calendar-dots"></div>';
+                }
+
+                html += `
+                    <div class="${cls}" onclick="selectCalendarDate('${dateStr}')">
+                        ${badge}
+                        <div class="calendar-day-num">${d}</div>
+                        ${dots}
+                    </div>
                 `;
-            }).join('');
+            }
+
+            html += `</div></div>`;
+
+            // 선택된 날짜의 할일 목록
+            if (selectedCalendarDate) {
+                const dayTodos = state.todos.filter(t => t.due === selectedCalendarDate);
+                const dateObj = new Date(selectedCalendarDate + 'T00:00');
+                const label = `${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일 (${WEEKDAY_KR[dateObj.getDay()]})`;
+                html += `<div class="calendar-selected-label">📌 ${label} <span class="date-group-count">${dayTodos.length}개</span></div>`;
+                if (dayTodos.length === 0) {
+                    html += '<div class="empty-state"><div class="empty-icon">📭</div><p class="empty-text">이 날에는 할 일이 없어요</p></div>';
+                } else {
+                    const priOrder = { high: 0, medium: 1, low: 2 };
+                    dayTodos.sort((a, b) => priOrder[a.priority] - priOrder[b.priority]);
+                    html += dayTodos.map(renderTodoItem).join('');
+                }
+            } else {
+                html += '<div style="text-align:center; color:var(--text-tertiary); font-size:13px; padding:16px;">📅 날짜를 선택하면 할 일이 표시돼요</div>';
+            }
+
+            list.innerHTML = html;
             setupSwipes();
+        }
+
+        function calendarChangeMonth(delta) {
+            calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + delta, 1);
+            updateTodos();
+        }
+
+        function calendarToToday() {
+            calendarMonth = new Date();
+            selectedCalendarDate = getLocalDate();
+            updateTodos();
+        }
+
+        function selectCalendarDate(dateStr) {
+            selectedCalendarDate = (selectedCalendarDate === dateStr) ? null : dateStr;
+            updateTodos();
         }
 
         function updateDashboardTodos() {
@@ -2053,7 +2716,7 @@
                 const lastDays = [];
                 for (let i = days - 1; i >= 0; i--) {
                     const d = new Date(); d.setDate(d.getDate() - i);
-                    const dateStr = d.toISOString().split('T')[0];
+                    const dateStr = getLocalDate(d);
                     const dayData = state.history.find(h => h.date === dateStr) || { completed: {} };
                     let showLabel = period === 'week' || (period === 'month' && i % 5 === 0);
                     lastDays.push({
@@ -2459,6 +3122,13 @@
 
         document.getElementById('addTodoBtn').addEventListener('click', addTodo);
         document.getElementById('todoInput').addEventListener('keypress', e => { if (e.key === 'Enter') addTodo(); });
+        document.querySelectorAll('.quick-date-chip').forEach(chip => {
+            chip.addEventListener('click', () => setQuickDate(chip.dataset.quickdate));
+        });
+        // 사용자가 직접 날짜를 고르면 빠른 날짜 칩 활성 해제
+        document.getElementById('todoDueInput').addEventListener('input', () => {
+            document.querySelectorAll('.quick-date-chip').forEach(c => c.classList.remove('active'));
+        });
         document.querySelectorAll('.chip').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
@@ -2511,6 +3181,7 @@
 
         initTheme();
         loadState();
+        initPremium();
         updateUI();
     </script>
 </body>
